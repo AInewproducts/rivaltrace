@@ -34,6 +34,8 @@ test('public acquisition routes have multi-page entry files', async () => {
     '../beauty-brands/summer-fridays/index.html',
     '../reports/summer-fridays-competitor-snapshot/index.html',
     '../guides/how-to-track-beauty-competitors/index.html',
+    '../methodology/index.html',
+    '../about/index.html',
   ]) {
     const html = await import('node:fs/promises').then(({ readFile }) => readFile(new URL(path, import.meta.url), 'utf8'));
     assert.match(html, /index, follow/);

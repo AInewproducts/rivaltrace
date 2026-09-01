@@ -13,6 +13,8 @@ export default defineConfig(({ mode }) => ({
         summerFridays: resolve(import.meta.dirname, "beauty-brands/summer-fridays/index.html"),
         summerFridaysSnapshot: resolve(import.meta.dirname, "reports/summer-fridays-competitor-snapshot/index.html"),
         monitoringGuide: resolve(import.meta.dirname, "guides/how-to-track-beauty-competitors/index.html"),
+        methodology: resolve(import.meta.dirname, "methodology/index.html"),
+        about: resolve(import.meta.dirname, "about/index.html"),
       },
     },
   },

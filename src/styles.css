@@ -20,6 +20,12 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 28px; }
 body { margin: 0; min-width: 320px; -webkit-font-smoothing: antialiased; }
+.seo-seed { max-width: 920px; margin: 0 auto; padding: 90px 28px; }
+.seo-seed > p:first-child { color: var(--berry); font-family: "IBM Plex Mono", monospace; font-size: 11px; text-transform: uppercase; }
+.seo-seed h1 { margin: 24px 0; font-size: clamp(42px, 7vw, 78px); }
+.seo-seed > p { max-width: 720px; color: var(--muted); font-size: 16px; }
+.seo-seed nav { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 32px; }
+.seo-seed nav a { color: var(--berry); font-size: 13px; }
 button, input, select, textarea { font: inherit; }
 button, a, summary { -webkit-tap-highlight-color: transparent; }
 button, a { color: inherit; }
@@ -294,7 +300,7 @@ progress { width: 100%; height: 8px; margin-top: 20px; accent-color: var(--berry
 .example-proof dt { color: var(--muted); font-size: 11px; }
 .example-proof dd { margin: 0; font-size: 12px; font-weight: 600; text-align: right; }
 
-.brand-page, .public-report-page, .guide-page { min-height: 100vh; background: linear-gradient(180deg, var(--page) 0, #fff 620px); }
+.brand-page, .public-report-page, .guide-page, .trust-page { min-height: 100vh; background: linear-gradient(180deg, var(--page) 0, #fff 620px); }
 .breadcrumbs { display: flex; gap: 8px; align-items: center; padding-top: 22px; color: var(--muted); font-size: 11px; }
 .breadcrumbs > span { display: flex; align-items: center; gap: 8px; }
 .breadcrumbs button { padding: 0; border: 0; background: transparent; color: var(--muted); font-size: inherit; }
@@ -385,6 +391,40 @@ progress { width: 100%; height: 8px; margin-top: 20px; accent-color: var(--berry
 .guide-faq summary { display: flex; justify-content: space-between; gap: 20px; align-items: center; min-height: 66px; font-size: 15px; font-weight: 600; }
 .guide-faq details[open] summary svg { transform: rotate(90deg); }
 .guide-faq details p { max-width: 760px; padding: 0 35px 20px 0; color: var(--muted); font-size: 13px; }
+
+.trust-article { max-width: 1080px; padding-top: 58px; padding-bottom: 90px; }
+.trust-hero { padding-bottom: 76px; }
+.trust-hero h1 { max-width: 960px; margin: 18px 0 27px; font-size: clamp(54px, 7vw, 86px); }
+.trust-hero .guide-lede { max-width: 880px; }
+.trust-section { padding: 72px 0; border-top: 1px solid var(--line); }
+.trust-section-heading { display: grid; grid-template-columns: .7fr 1.3fr; gap: 55px; align-items: start; margin-bottom: 38px; }
+.trust-section-heading h2 { max-width: 720px; margin: 0; font-size: 40px; }
+.method-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.method-cards article { min-height: 240px; padding: 25px 22px; border: 1px solid var(--line); border-radius: 13px; background: var(--white); }
+.method-cards svg { color: var(--berry); }
+.method-cards h3 { margin: 32px 0 12px; font-size: 19px; }
+.method-cards p { margin: 0; color: var(--muted); font-size: 12px; }
+.comparison-rule { display: grid; grid-template-columns: 1fr .9fr; gap: 65px; align-items: center; margin: 10px 0 70px; padding: 42px; border-radius: 16px; background: var(--purple); }
+.comparison-rule h2 { margin: 13px 0 15px; font-size: 36px; }
+.comparison-rule p:not(.eyebrow) { margin: 0; color: var(--muted); font-size: 13px; }
+.comparison-rule ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid #d9ccec; }
+.comparison-rule li { display: flex; justify-content: space-between; gap: 22px; padding: 19px 0; border-bottom: 1px solid #d9ccec; }
+.comparison-rule li span { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 10px; }
+.comparison-rule li strong { font-size: 12px; text-align: right; }
+.confidence-list { border-top: 1px solid var(--line); }
+.confidence-list > div { display: grid; grid-template-columns: 70px 1fr; gap: 24px; padding: 25px 0; border-bottom: 1px solid var(--line); }
+.confidence-list > div > span { color: var(--berry); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+.confidence-list h3 { margin: 0 0 8px; font-size: 21px; }
+.confidence-list p { max-width: 780px; margin: 0; color: var(--muted); font-size: 13px; }
+.trust-update, .why-beauty { display: grid; grid-template-columns: .8fr 1.2fr; gap: 65px; align-items: start; margin: 70px 0 0; padding-top: 55px; border-top: 1px solid var(--line); }
+.trust-update h2, .why-beauty h2 { margin: 13px 0 0; font-size: 34px; }
+.trust-update > p, .why-beauty > p { margin: 0; color: var(--muted); font-size: 14px; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 70px; }
+.about-grid article { min-height: 330px; padding: 34px; border: 1px solid var(--line); border-radius: 15px; background: var(--white); }
+.about-grid article:last-child { background: var(--purple); }
+.about-grid h2 { margin: 25px 0 17px; font-size: 31px; }
+.about-grid p:not(.eyebrow) { color: var(--muted); font-size: 13px; }
+.current-state { padding: 75px 0; }
 
 /* Workspace */
 .app-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 100vh; background: #fcf8fb; }
@@ -657,6 +697,22 @@ progress { width: 100%; height: 8px; margin-top: 20px; accent-color: var(--berry
   .guide-steps > div { grid-template-columns: 44px 1fr; }
   .guide-checklist { grid-template-columns: 1fr; gap: 28px; padding: 26px 22px; }
   .guide-faq { padding-top: 55px; }
+  .trust-article { padding-top: 42px; padding-bottom: 60px; }
+  .trust-hero { padding-bottom: 52px; }
+  .trust-hero h1 { font-size: 45px; }
+  .trust-section { padding: 52px 0; }
+  .trust-section-heading { grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
+  .trust-section-heading h2 { font-size: 33px; }
+  .method-cards { grid-template-columns: 1fr; }
+  .method-cards article { min-height: 0; }
+  .comparison-rule { grid-template-columns: 1fr; gap: 30px; margin-bottom: 45px; padding: 28px 22px; }
+  .comparison-rule h2 { font-size: 31px; }
+  .confidence-list > div { grid-template-columns: 42px 1fr; gap: 13px; }
+  .trust-update, .why-beauty { grid-template-columns: 1fr; gap: 18px; margin-top: 48px; padding-top: 42px; }
+  .trust-update h2, .why-beauty h2 { font-size: 30px; }
+  .about-grid { grid-template-columns: 1fr; margin-bottom: 50px; }
+  .about-grid article { min-height: 0; padding: 25px 22px; }
+  .current-state { padding: 55px 0; }
   .app-shell { display: block; }
   .sidebar { position: relative; height: auto; padding: 23px 16px 15px; border: 0; border-bottom: 1px solid var(--line); }
   .workspace-switcher, .sidebar-footer { display: none; }

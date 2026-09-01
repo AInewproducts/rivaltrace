@@ -1,0 +1,24 @@
+# RivalTrace
+
+RivalTrace is an evidence-first beauty competitor monitoring product for independent brands and lean teams.
+Primary website: https://ainewproducts.github.io/rivaltrace/
+
+## Key pages
+
+- Free competitor snapshot: https://ainewproducts.github.io/rivaltrace/tools/competitor-snapshot/
+- Beauty competitor monitoring guide: https://ainewproducts.github.io/rivaltrace/guides/how-to-track-beauty-competitors/
+- Monitoring methodology: https://ainewproducts.github.io/rivaltrace/methodology/
+- About RivalTrace: https://ainewproducts.github.io/rivaltrace/about/
+- Summer Fridays cited brand example: https://ainewproducts.github.io/rivaltrace/beauty-brands/summer-fridays/
+- Summer Fridays dated public snapshot: https://ainewproducts.github.io/rivaltrace/reports/summer-fridays-competitor-snapshot/
+
+## Evidence policy
+
+- A first capture creates a baseline; it is not evidence of a historical change.
+- A change requires a later comparison of the same public URL, market, currency, product variant and purchase mode.
+- Observable facts are separated from interpretation and unsupported impact claims.
+- Public examples are dated, linked to the original source and explicit about what is not established.
+
+## Current product boundary
+
+The free snapshot tool is manual and local to the browser. It does not use an external API, fetch competitor pages, sync to an account, process payments or run background monitoring.

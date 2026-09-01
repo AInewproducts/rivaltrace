@@ -2,7 +2,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/robots.txt") {
-      return new Response(`User-agent: *\nAllow: /\nSitemap: ${url.origin}/sitemap.xml\n`, {
+      return new Response(`User-agent: *\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n\nSitemap: ${url.origin}/sitemap.xml\n`, {
         headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=3600" },
       });
     }
@@ -13,8 +13,10 @@ export default {
         "/beauty-brands/summer-fridays",
         "/reports/summer-fridays-competitor-snapshot",
         "/guides/how-to-track-beauty-competitors",
+        "/methodology",
+        "/about",
       ];
-      const urls = paths.map((path) => `<url><loc>${url.origin}${path}</loc><lastmod>2026-08-28</lastmod></url>`).join("");
+      const urls = paths.map((path) => `<url><loc>${url.origin}${path}</loc><lastmod>2026-09-01</lastmod></url>`).join("");
       return new Response(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`, {
         headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" },
       });

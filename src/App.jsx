@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, Bell, CalendarBlank, Check, CheckCircle, CreditC
 import { changes, normalizeUrl } from "./model.js";
 import { Setup, Dashboard, Report, Weekly } from "./Views.jsx";
 import { Pricing, Checkout, Product } from "./Marketing.jsx";
-import { BeautyMonitoringGuide, SnapshotTool, SummerFridaysBrand, SummerFridaysSnapshot } from "./PublicPages.jsx";
+import { AboutPage, BeautyMonitoringGuide, MethodologyPage, SnapshotTool, SummerFridaysBrand, SummerFridaysSnapshot } from "./PublicPages.jsx";
 
 const DEPLOY_BASE = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 const assetUrl = (name) => `${DEPLOY_BASE}/assets/${name}`;
@@ -13,8 +13,10 @@ const PUBLIC_ROUTE_PATHS = {
   "brand/summer-fridays": "/beauty-brands/summer-fridays",
   "public-report/summer-fridays": "/reports/summer-fridays-competitor-snapshot",
   "guide/monitoring": "/guides/how-to-track-beauty-competitors",
+  methodology: "/methodology",
+  about: "/about",
 };
-const PUBLIC_PATHS = Object.fromEntries(Object.entries(PUBLIC_ROUTE_PATHS).map(([route, path]) => [route, `${DEPLOY_BASE}${path}`]));
+const PUBLIC_PATHS = Object.fromEntries(Object.entries(PUBLIC_ROUTE_PATHS).map(([route, path]) => [route, path === "/" ? `${DEPLOY_BASE}/` : `${DEPLOY_BASE}${path}/`]));
 
 function routeFromLocation() {
   const fullPath = window.location.pathname;
@@ -52,17 +54,17 @@ function useRoute() {
   return [route, go];
 }
 
-function Brand({ go }) { return <a href="#home" className="brand" onClick={(e) => { e.preventDefault(); go("home"); }}>RivalTrace</a>; }
+function Brand({ go }) { return <a href={PUBLIC_PATHS.home} className="brand" onClick={(e) => { e.preventDefault(); go("home"); }}>RivalTrace</a>; }
 function Badge({ type = "demo", children }) { return <span className={"badge badge-" + type}>{children}</span>; }
 function DemoNote({ children }) { return <p className="demo-note"><ShieldCheck size={18} />{children || "Interactive demo · Sample data, no live monitoring or payment."}</p>; }
 
 function MarketingNav({ go }) {
   const [open, setOpen] = useState(false);
-  return <header className="marketing-nav"><Brand go={go} /><button className="menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="marketing-menu" onClick={() => setOpen(!open)}>{open ? <X size={24} /> : <List size={24} />}</button><nav id="marketing-menu" className={open ? "is-open" : ""} aria-label="Primary navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guides"], ["app", "Open demo"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id] || "#" + id} onClick={(e) => { e.preventDefault(); setOpen(false); go(id); }}>{label}</a>)}</nav></header>;
+  return <header className="marketing-nav"><Brand go={go} /><button className="menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="marketing-menu" onClick={() => setOpen(!open)}>{open ? <X size={24} /> : <List size={24} />}</button><nav id="marketing-menu" className={open ? "is-open" : ""} aria-label="Primary navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["methodology", "Method"], ["app", "Open demo"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id] || "#" + id} onClick={(e) => { e.preventDefault(); setOpen(false); go(id); }}>{label}</a>)}</nav></header>;
 }
 
 function Footer({ go }) {
-  return <footer className="site-footer"><div><Brand go={go} /><p>A clearer view of your beauty market.</p></div><nav aria-label="Footer navigation">{[["product", "How it works"], ["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["pricing", "Pricing"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id] || "#" + id} onClick={(e) => { e.preventDefault(); go(id); }}>{label}</a>)}</nav><small>© 2026 RivalTrace · Public brand references are cited. Sample changes remain clearly labeled.</small></footer>;
+  return <footer className="site-footer"><div><Brand go={go} /><p>A clearer view of your beauty market.</p></div><nav aria-label="Footer navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["methodology", "Methodology"], ["about", "About"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id]} onClick={(e) => { e.preventDefault(); go(id); }}>{label}</a>)}</nav><small>© 2026 RivalTrace · Public brand references are cited. Sample changes remain clearly labeled.</small></footer>;
 }
 
 function UrlForm({ value, setValue, onSubmit, id = "competitor-url", button = "Start tracking", disabled = false }) {
@@ -124,6 +126,8 @@ export function App() {
       brand: ["Summer Fridays Competitor Intelligence", "A cited Summer Fridays brand monitoring example covering public products, offers and pages to watch."],
       "public-report": ["Summer Fridays Public Snapshot", "A dated, source-linked baseline of the Summer Fridays Jet Lag Mask product page."],
       guide: ["How to Track Beauty Competitors", "A practical evidence-first guide to monitoring beauty competitor price, product and promotion changes."],
+      methodology: ["Competitor Monitoring Methodology", "How RivalTrace records public beauty storefront facts, validates comparisons and separates evidence from interpretation."],
+      about: ["About RivalTrace", "RivalTrace is an evidence-first beauty competitor monitoring product for independent brands and lean teams."],
       app: ["Your Watchlist", "RivalTrace sample beauty competitor watchlist."],
       report: ["Sample Evidence", "RivalTrace sample evidence report."],
       weekly: ["Weekly Brief", "RivalTrace sample weekly brief."],
@@ -148,7 +152,8 @@ export function App() {
     ensureMeta('meta[property="og:title"]', ["property", "og:title"], title + " — RivalTrace");
     ensureMeta('meta[property="og:description"]', ["property", "og:description"], description);
     ensureMeta('meta[property="og:image"]', ["property", "og:image"], window.location.origin + DEPLOY_BASE + "/og.png");
-    ensureMeta('meta[property="og:url"]', ["property", "og:url"], window.location.origin + window.location.pathname);
+    const canonicalPath = PUBLIC_PATHS[route] || window.location.pathname;
+    ensureMeta('meta[property="og:url"]', ["property", "og:url"], window.location.origin + canonicalPath);
     ensureMeta('meta[name="twitter:card"]', ["name", "twitter:card"], "summary_large_image");
     ensureMeta('meta[name="twitter:title"]', ["name", "twitter:title"], title + " — RivalTrace");
     ensureMeta('meta[name="twitter:description"]', ["name", "twitter:description"], description);
@@ -159,18 +164,17 @@ export function App() {
       canonical.rel = "canonical";
       document.head.appendChild(canonical);
     }
-    canonical.href = window.location.origin + window.location.pathname;
+    canonical.href = window.location.origin + canonicalPath;
+    const siteUrl = window.location.origin + PUBLIC_PATHS.home;
+    const schemaType = page === "guide" ? "Article" : page === "snapshot" ? "WebApplication" : page === "brand" ? "ProfilePage" : page === "about" ? "AboutPage" : page === "home" ? "WebSite" : "WebPage";
     const schema = {
       "@context": "https://schema.org",
-      "@type": page === "guide" ? "Article" : page === "snapshot" ? "WebApplication" : "WebPage",
-      name: title,
-      headline: title,
-      description,
-      url: canonical.href,
-      image: window.location.origin + DEPLOY_BASE + "/og.png",
-      dateModified: "2026-08-28",
-      publisher: { "@type": "Organization", name: "RivalTrace" },
-      ...(page === "snapshot" ? { applicationCategory: "BusinessApplication", operatingSystem: "Web" } : {}),
+      "@graph": [
+        { "@type": "Organization", "@id": siteUrl + "#organization", name: "RivalTrace", url: siteUrl, description: "Evidence-first beauty competitor monitoring for independent brands and lean teams." },
+        { "@type": "WebSite", "@id": siteUrl + "#website", name: "RivalTrace", url: siteUrl, publisher: { "@id": siteUrl + "#organization" }, inLanguage: "en" },
+        { "@type": schemaType, "@id": canonical.href + "#page", name: title, headline: title, description, url: canonical.href, image: window.location.origin + DEPLOY_BASE + "/og.png", dateModified: "2026-09-01", isPartOf: { "@id": siteUrl + "#website" }, publisher: { "@id": siteUrl + "#organization" }, ...(page === "snapshot" ? { applicationCategory: "BusinessApplication", operatingSystem: "Web", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } } : {}) },
+        ...(page === "home" ? [] : [{ "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "RivalTrace", item: siteUrl }, { "@type": "ListItem", position: 2, name: title, item: canonical.href }] }]),
+      ],
     };
     let structuredData = document.getElementById("rivaltrace-structured-data");
     if (!structuredData) {
@@ -186,6 +190,8 @@ export function App() {
   else if (page === "brand") content = <SummerFridaysBrand go={go} />;
   else if (page === "public-report") content = <SummerFridaysSnapshot go={go} />;
   else if (page === "guide") content = <BeautyMonitoringGuide go={go} />;
+  else if (page === "methodology") content = <MethodologyPage go={go} />;
+  else if (page === "about") content = <AboutPage go={go} />;
   else if (page === "setup") content = <Setup go={go} shopUrl={shopUrl} setShopUrl={setShopUrl} onBaseline={setBaseline} />;
   else if (page === "app") content = <Dashboard go={go} openReport={openReport} baseline={baseline} decisions={decisions} />;
   else if (page === "weekly") content = <Weekly go={go} openReport={openReport} decisions={decisions} />;

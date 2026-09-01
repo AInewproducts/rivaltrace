@@ -164,3 +164,40 @@ export function BeautyMonitoringGuide({ go }) {
     <Footer go={go} />
   </main>;
 }
+
+export function MethodologyPage({ go }) {
+  const confidenceLevels = [
+    ["01", "Observed fact", "A visible value or message recorded from a named public URL at a stated time."],
+    ["02", "Valid comparison", "Two observations of the same page, market, currency, variant and purchase mode."],
+    ["03", "Interpretation", "A possible business meaning that remains separate from the observed difference."],
+    ["04", "Not established", "A claim the available public evidence cannot support, such as sales impact or intent."],
+  ];
+  return <main className="methodology-page trust-page">
+    <MarketingNav go={go} />
+    <Breadcrumbs items={[["Home", () => go("home")], ["Methodology", null]]} />
+    <article className="trust-article section-container">
+      <header className="trust-hero"><p className="eyebrow">RivalTrace methodology · Updated September 1, 2026</p><h1>Evidence before interpretation.</h1><p className="guide-lede"><strong>Short answer:</strong> RivalTrace records observable storefront facts, compares like with like, and labels interpretation separately. A first capture is a baseline—not proof of change.</p><div className="example-actions"><button className="primary-button" onClick={() => go("snapshot")}>Create a free baseline <ArrowRight size={19} /></button><button className="outline-button" onClick={() => go("public-report/summer-fridays")}>Inspect a cited example</button></div></header>
+      <section className="trust-section"><div className="trust-section-heading"><p className="eyebrow">What a useful capture contains</p><h2>Enough context to compare the same thing later.</h2></div><div className="method-cards">{[["Public source", "The exact public URL and a capture timestamp."], ["Market context", "Currency, region and purchase mode when they affect the visible offer."], ["Product identity", "Product label, size or variant so a reformulation or new pack is not misread."], ["Observable fields", "Listed price, availability and promotion wording—without guessing why they changed."]].map(([title, body]) => <article key={title}><ShieldCheck size={23} /><h3>{title}</h3><p>{body}</p></article>)}</div></section>
+      <section className="comparison-rule"><div><p className="eyebrow">Comparison rule</p><h2>The first capture creates the reference point.</h2><p>Only a later capture of the same comparable surface can establish a difference. If the product label changes for the same URL, the local tool stops instead of producing a misleading Trace.</p></div><ol><li><span>Baseline</span><strong>One dated observation</strong></li><li><span>Comparison</span><strong>Same page and context later</strong></li><li><span>Trace</span><strong>Observable fields differ</strong></li></ol></section>
+      <section className="trust-section"><div className="trust-section-heading"><p className="eyebrow">Confidence labels</p><h2>What each statement is allowed to mean.</h2></div><div className="confidence-list">{confidenceLevels.map(([number, title, body]) => <div key={number}><span>{number}</span><div><h3>{title}</h3><p>{body}</p></div></div>)}</div></section>
+      <section className="method-boundary"><ShieldCheck size={31} /><div><p className="eyebrow">Data and privacy boundary</p><h2>The current free tool is local and manual.</h2><p>You open the source page and enter what you can see. Captures stay in this browser. RivalTrace does not fetch the competitor page, call an external API, sync to an account, process payment or run background monitoring in this version.</p></div></section>
+      <section className="trust-update"><div><p className="eyebrow">Freshness and corrections</p><h2>Public examples are dated, linked and revisitable.</h2></div><p>Verify the original source before acting because storefronts change. RivalTrace does not invent historical observations. If a cited factual record is wrong, it should be corrected at the fact level without rewriting the evidence boundary around it.</p></section>
+    </article>
+    <Footer go={go} />
+  </main>;
+}
+
+export function AboutPage({ go }) {
+  return <main className="about-page trust-page">
+    <MarketingNav go={go} />
+    <Breadcrumbs items={[["Home", () => go("home")], ["About RivalTrace", null]]} />
+    <article className="trust-article section-container">
+      <header className="trust-hero"><p className="eyebrow">About RivalTrace</p><h1>A clearer view of the beauty market.</h1><p className="guide-lede"><strong>RivalTrace is an evidence-first beauty competitor monitoring product</strong> for independent brands and lean teams. It helps teams record public price, availability, product and promotion signals without confusing a visible change with its business impact.</p><div className="example-actions"><button className="primary-button" onClick={() => go("snapshot")}>Try the free snapshot <ArrowRight size={19} /></button><button className="outline-button" onClick={() => go("methodology")}>Read the methodology</button></div></header>
+      <section className="about-grid"><article><p className="eyebrow">What it does</p><h2>Turns public observations into a repeatable record.</h2><p>Start with one exact competitor page, save the visible facts, and compare the same context later. Use the evidence to decide what deserves attention.</p></article><article><p className="eyebrow">What it does not do</p><h2>It does not claim access to private competitor data.</h2><p>RivalTrace cannot prove revenue, demand, conversion, campaign performance or strategic intent from a storefront page. Those conclusions require additional reliable evidence.</p></article></section>
+      <section className="why-beauty"><div><p className="eyebrow">Why beauty first</p><h2>A category where context changes the meaning.</h2></div><p>Beauty teams compare many sizes, bundles, subscription offers, limited launches and promotional messages. A useful monitoring workflow must preserve those details instead of flattening every difference into an alert.</p></section>
+      <section className="current-state"><div className="trust-section-heading"><p className="eyebrow">Current product state</p><h2>Useful now, explicit about what comes later.</h2></div><div className="method-cards">{[["Available", "A free manual baseline and comparison tool stored locally in your browser."], ["Demonstrated", "A sample dashboard, evidence workflow and source-linked Summer Fridays example."], ["Not active", "No third-party crawling, account sync, payment processing or background alerts."], ["Demand-led next", "Additional automation can be added only when real user demand justifies it."]].map(([title, body]) => <article key={title}><CheckCircle size={23} /><h3>{title}</h3><p>{body}</p></article>)}</div></section>
+      <section className="report-next"><div><p className="eyebrow">Start with one public page</p><h2>Build the baseline before the story.</h2><p>Record what is visible today, then return to the same page later for the first valid comparison.</p></div><button className="primary-button" onClick={() => go("snapshot")}>Create a snapshot <ArrowRight size={19} /></button></section>
+    </article>
+    <Footer go={go} />
+  </main>;
+}

@@ -71,6 +71,9 @@ test("serves origin-aware robots and sitemap files", async () => {
   assert.equal(sitemap.headers.get("content-type"), "application/xml; charset=utf-8");
   const body = await sitemap.text();
   assert.match(body, /https:\/\/rivaltrace\.example\/beauty-brands\/summer-fridays/);
+  assert.match(body, /https:\/\/rivaltrace\.example\/methodology/);
+  assert.match(body, /https:\/\/rivaltrace\.example\/about/);
+  assert.equal((body.match(/<url>/g) || []).length, 7);
   assert.match(body, /https:\/\/rivaltrace\.example\/guides\/how-to-track-beauty-competitors/);
   assert.equal(assetCalls, 0);
 });
