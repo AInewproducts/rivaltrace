@@ -5,17 +5,22 @@ import { Setup, Dashboard, Report, Weekly } from "./Views.jsx";
 import { Pricing, Checkout, Product } from "./Marketing.jsx";
 import { BeautyMonitoringGuide, SnapshotTool, SummerFridaysBrand, SummerFridaysSnapshot } from "./PublicPages.jsx";
 
-const PUBLIC_PATHS = {
+const DEPLOY_BASE = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+const assetUrl = (name) => `${DEPLOY_BASE}/assets/${name}`;
+const PUBLIC_ROUTE_PATHS = {
   home: "/",
   snapshot: "/tools/competitor-snapshot",
   "brand/summer-fridays": "/beauty-brands/summer-fridays",
   "public-report/summer-fridays": "/reports/summer-fridays-competitor-snapshot",
   "guide/monitoring": "/guides/how-to-track-beauty-competitors",
 };
+const PUBLIC_PATHS = Object.fromEntries(Object.entries(PUBLIC_ROUTE_PATHS).map(([route, path]) => [route, `${DEPLOY_BASE}${path}`]));
 
 function routeFromLocation() {
-  const pathname = window.location.pathname.replace(/\/$/, "") || "/";
-  const publicRoute = Object.entries(PUBLIC_PATHS).find(([, path]) => path === pathname)?.[0];
+  const fullPath = window.location.pathname;
+  const localPath = DEPLOY_BASE && fullPath.startsWith(DEPLOY_BASE) ? fullPath.slice(DEPLOY_BASE.length) || "/" : fullPath;
+  const pathname = localPath.replace(/\/$/, "") || "/";
+  const publicRoute = Object.entries(PUBLIC_ROUTE_PATHS).find(([, path]) => path === pathname)?.[0];
   if (publicRoute && !window.location.hash) return publicRoute;
   if (window.location.hash) return window.location.hash.slice(1);
   return publicRoute || "not-found";
@@ -38,7 +43,7 @@ function useRoute() {
       window.history.pushState({}, "", publicPath);
       setRoute(next);
     } else {
-      if (window.location.pathname !== "/") window.history.pushState({}, "", "/");
+      if (window.location.pathname !== PUBLIC_PATHS.home) window.history.pushState({}, "", PUBLIC_PATHS.home);
       window.location.hash = next;
       setRoute(next);
     }
@@ -88,7 +93,7 @@ function Home({ go, shopUrl, setShopUrl, openReport, section }) {
       <UrlForm value={shopUrl} setValue={setShopUrl} onSubmit={() => go("snapshot")} button="Get a free snapshot" />
       <p className="baseline-note">No account required. Your first scan establishes a baseline. <span>Changes require a later capture.</span></p>
       <button className="text-link hero-link" onClick={() => openReport("price")}>View a sample report</button>
-      <div className="watchlist-stage"><img className="hero-product hero-product-left" src="/assets/beauty-cleanser-cutout.webp" alt="" aria-hidden="true" /><article className="watchlist-card"><div className="watchlist-title"><h2>Your beauty watchlist</h2><Badge>Demo preview</Badge></div><Watchlist openReport={openReport} /></article><img className="hero-product hero-product-right" src="/assets/beauty-serum-cutout.webp" alt="" aria-hidden="true" /></div>
+      <div className="watchlist-stage"><img className="hero-product hero-product-left" src={assetUrl("beauty-cleanser-cutout.webp")} alt="" aria-hidden="true" /><article className="watchlist-card"><div className="watchlist-title"><h2>Your beauty watchlist</h2><Badge>Demo preview</Badge></div><Watchlist openReport={openReport} /></article><img className="hero-product hero-product-right" src={assetUrl("beauty-serum-cutout.webp")} alt="" aria-hidden="true" /></div>
       <p className="evidence-promise"><ShieldCheck size={25} />Public pages. Timestamped evidence.</p>
     </section>
     <Steps /><div className="basics-link"><a className="text-link" href="#product">Learn the beauty monitoring basics <ArrowRight size={18} /></a></div>
@@ -142,12 +147,12 @@ export function App() {
     };
     ensureMeta('meta[property="og:title"]', ["property", "og:title"], title + " — RivalTrace");
     ensureMeta('meta[property="og:description"]', ["property", "og:description"], description);
-    ensureMeta('meta[property="og:image"]', ["property", "og:image"], window.location.origin + "/og.png");
+    ensureMeta('meta[property="og:image"]', ["property", "og:image"], window.location.origin + DEPLOY_BASE + "/og.png");
     ensureMeta('meta[property="og:url"]', ["property", "og:url"], window.location.origin + window.location.pathname);
     ensureMeta('meta[name="twitter:card"]', ["name", "twitter:card"], "summary_large_image");
     ensureMeta('meta[name="twitter:title"]', ["name", "twitter:title"], title + " — RivalTrace");
     ensureMeta('meta[name="twitter:description"]', ["name", "twitter:description"], description);
-    ensureMeta('meta[name="twitter:image"]', ["name", "twitter:image"], window.location.origin + "/og.png");
+    ensureMeta('meta[name="twitter:image"]', ["name", "twitter:image"], window.location.origin + DEPLOY_BASE + "/og.png");
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {
       canonical = document.createElement("link");
@@ -162,7 +167,7 @@ export function App() {
       headline: title,
       description,
       url: canonical.href,
-      image: window.location.origin + "/og.png",
+      image: window.location.origin + DEPLOY_BASE + "/og.png",
       dateModified: "2026-08-28",
       publisher: { "@type": "Organization", name: "RivalTrace" },
       ...(page === "snapshot" ? { applicationCategory: "BusinessApplication", operatingSystem: "Web" } : {}),

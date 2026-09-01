@@ -26,7 +26,7 @@ test('yearly quotes retain the selected discount and period', () => {
 });
 test('every sample row has unique evidence and matching product art', () => {
   assert.equal(new Set(changes.map(x => x.id)).size, 3);
-  for (const item of changes) { assert.ok(item.before); assert.ok(item.after); assert.ok(item.checks.length); assert.ok(item.image.startsWith('/assets/beauty-')); }
+  for (const item of changes) { assert.ok(item.before); assert.ok(item.after); assert.ok(item.checks.length); assert.match(item.image, /^\/.*assets\/beauty-/); }
 });
 test('public acquisition routes have multi-page entry files', async () => {
   for (const path of [
