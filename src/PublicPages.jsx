@@ -1,11 +1,59 @@
-import { ArrowRight, ArrowSquareOut, CheckCircle, Clock, LinkSimple, ShieldCheck, Storefront } from "@phosphor-icons/react";
+import { useState } from "react";
+import { ArrowRight, ArrowSquareOut, CheckCircle, Clock, ShieldCheck, Storefront } from "@phosphor-icons/react";
 import { Badge, DemoNote, Footer, MarketingNav, UrlForm } from "./App.jsx";
+import { getSnapshotRecord, saveCapture } from "./snapshots.js";
 
 export function SnapshotTool({ go, shopUrl, setShopUrl }) {
+  const [prepared, setPrepared] = useState(false);
+  const [hasSavedBaseline, setHasSavedBaseline] = useState(false);
+  const [form, setForm] = useState({ pageLabel: "", price: "", currency: "USD", availability: "Not shown", promotion: "", notes: "" });
+  const [result, setResult] = useState(null);
+  const [captureError, setCaptureError] = useState("");
   const hostname = (() => {
     try { return new URL(shopUrl).hostname.replace(/^www\./, ""); }
     catch { return "your competitor"; }
   })();
+
+  const prepare = () => {
+    const saved = getSnapshotRecord(shopUrl);
+    setPrepared(true);
+    setResult(null);
+    setCaptureError("");
+    setHasSavedBaseline(Boolean(saved));
+    setForm({
+      pageLabel: saved?.latest?.pageLabel || "",
+      price: "",
+      currency: saved?.latest?.currency || "USD",
+      availability: "Not shown",
+      promotion: "",
+      notes: "",
+    });
+  };
+  const updateUrl = (value) => {
+    setShopUrl(value);
+    setPrepared(false);
+    setResult(null);
+    setCaptureError("");
+  };
+  const updateField = (field) => (event) => setForm((current) => ({ ...current, [field]: event.target.value }));
+  const save = (event) => {
+    event.preventDefault();
+    try {
+      const next = saveCapture({ ...form, url: shopUrl });
+      setResult(next);
+      setHasSavedBaseline(true);
+      setCaptureError("");
+    } catch (error) {
+      setCaptureError(error.message);
+    }
+  };
+
+  const fieldLabels = { currency: "Currency", price: "Listed price", availability: "Availability", promotion: "Promotion text" };
+  const formatValue = (change, value, capture) => {
+    if (value === null || value === "") return "Not recorded";
+    if (change.field === "price") return `${capture.currency} ${Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+    return String(value);
+  };
 
   return <main className="snapshot-page">
     <MarketingNav go={go} />
@@ -17,24 +65,35 @@ export function SnapshotTool({ go, shopUrl, setShopUrl }) {
       </div>
       <div className="snapshot-tool-card">
         <label className="field-label" htmlFor="snapshot-url">Competitor website</label>
-        <UrlForm id="snapshot-url" value={shopUrl} setValue={setShopUrl} button="Prepare baseline" onSubmit={() => {}} />
-        <DemoNote>This launch preview validates the URL locally. It does not fetch the website or call an external API.</DemoNote>
+        <UrlForm id="snapshot-url" value={shopUrl} setValue={updateUrl} button="Prepare baseline" onSubmit={prepare} />
+        <DemoNote>You enter the visible facts. They stay in this browser—no page fetch, account sync or external API.</DemoNote>
       </div>
     </section>
-    {shopUrl ? <section className="snapshot-result section-container" aria-live="polite">
+    {prepared ? <section className="snapshot-result section-container" aria-live="polite">
       <div className="snapshot-result-head">
-        <div><p className="eyebrow">Baseline preview</p><h2>{hostname}</h2></div>
-        <Badge type="copy">Baseline only</Badge>
+        <div><p className="eyebrow">Manual evidence capture</p><h2>{hostname}</h2></div>
+        <Badge type="copy">{hasSavedBaseline ? "Baseline found" : "First baseline"}</Badge>
       </div>
-      <div className="snapshot-facts">
-        <article><LinkSimple size={24} /><span>Public source</span><strong>{shopUrl}</strong></article>
-        <article><Clock size={24} /><span>Capture state</span><strong>Not captured in this preview</strong></article>
-        <article><CheckCircle size={24} /><span>Observed changes</span><strong>0 · waiting for a later capture</strong></article>
-        <article><ShieldCheck size={24} /><span>Confidence</span><strong>Not evaluated</strong></article>
-      </div>
-      <div className="snapshot-next"><div><h3>What happens next?</h3><p>A production capture would record the source URL, timestamp, visible price, product variant and promotion copy. Only a later successful capture can create a before-and-after Trace.</p></div><button className="primary-button" onClick={() => go("setup")}>Preview monitoring setup <ArrowRight size={19} /></button></div>
+      <form className="manual-capture-form" onSubmit={save} noValidate>
+        <div className="manual-grid">
+          <label className="manual-field manual-field-wide"><span>Page or product label <strong>Required</strong></span><input value={form.pageLabel} onChange={updateField("pageLabel")} placeholder="Jet Lag Mask · 64g" /></label>
+          <label className="manual-field"><span>Listed price <small>Optional</small></span><input type="number" min="0" step="0.01" inputMode="decimal" value={form.price} onChange={updateField("price")} placeholder="49.00" /></label>
+          <label className="manual-field"><span>Currency</span><select value={form.currency} onChange={updateField("currency")}>{["USD", "GBP", "EUR", "CAD", "AUD"].map((currency) => <option key={currency}>{currency}</option>)}</select></label>
+          <label className="manual-field"><span>Availability</span><select value={form.availability} onChange={updateField("availability")}>{["Not shown", "In stock", "Out of stock", "Pre-order"].map((value) => <option key={value}>{value}</option>)}</select></label>
+          <label className="manual-field manual-field-wide"><span>Promotion text <small>Optional</small></span><input value={form.promotion} onChange={updateField("promotion")} placeholder="Subscribe & Save 15%" /></label>
+          <label className="manual-field manual-field-wide"><span>Capture notes <small>Optional · not compared</small></span><textarea value={form.notes} onChange={updateField("notes")} placeholder="Selected size, market or other context" rows="3" /></label>
+        </div>
+        <div className="capture-actions"><div><ShieldCheck size={20} /><p><strong>Local-only record.</strong> Open the public page yourself, enter what you can see, then save. RivalTrace stores up to 20 captures for this exact URL on this device.</p></div><button className="primary-button" type="submit">{hasSavedBaseline ? "Compare with last capture" : "Save first baseline"}<ArrowRight size={19} /></button></div>
+        {captureError && <p className="form-error" role="alert">{captureError}</p>}
+      </form>
+      {result && <div className={`capture-result capture-result-${result.status}`}>
+        <div className="capture-result-heading"><div><p className="eyebrow">{result.status === "baseline" ? "Baseline saved" : result.status === "changed" ? "Observable difference found" : "Comparison complete"}</p><h3>{result.status === "baseline" ? "Ready for a later capture." : result.status === "changed" ? `${result.changes.length} comparable field${result.changes.length === 1 ? "" : "s"} changed.` : "No comparable fields changed."}</h3></div><Badge type={result.status === "changed" ? "price" : "copy"}>{result.captureCount} local capture{result.captureCount === 1 ? "" : "s"}</Badge></div>
+        {result.status === "baseline" ? <p className="capture-summary"><Clock size={20} />Saved {new Date(result.after.capturedAt).toLocaleString()} as the first dated observation. This is not yet evidence of a change.</p> : result.changes.length ? <div className="change-list">{result.changes.map((change) => <article className="change-row" key={change.field}><span>{fieldLabels[change.field]}</span><div><small>Before</small><strong>{formatValue(change, change.before, result.before)}</strong></div><ArrowRight size={20} /><div><small>After</small><strong>{formatValue(change, change.after, result.after)}</strong></div>{typeof change.percent === "number" && <Badge type="price">{change.percent > 0 ? "+" : ""}{change.percent}%</Badge>}</article>)}</div> : <p className="capture-summary"><CheckCircle size={20} />The entered currency, price, availability and promotion text match the previous local capture.</p>}
+        <p className="capture-boundary"><ShieldCheck size={18} /><span><strong>Evidence boundary:</strong> this result compares your manual entries only. It does not prove why a storefront changed or what impact the change had.</span></p>
+      </div>}
+      <div className="snapshot-next"><div><h3>Keep the comparison trustworthy.</h3><p>Use the same URL, market, currency, product size and purchase mode each time. If the product label changes, RivalTrace stops the comparison instead of producing a misleading Trace.</p></div><a className="outline-button" href={shopUrl} target="_blank" rel="noreferrer">Open public page <ArrowSquareOut size={18} /></a></div>
       <button className="text-link snapshot-example-link" onClick={() => go("public-report/summer-fridays")}>Prefer a completed example? Open the cited Summer Fridays snapshot <ArrowRight size={18} /></button>
-    </section> : <section className="snapshot-empty section-container"><p>Paste a URL above to see the exact baseline record RivalTrace would prepare.</p></section>}
+    </section> : <section className="snapshot-empty section-container"><p>Paste a public page URL above to prepare a local evidence record.</p></section>}
     <Footer go={go} />
   </main>;
 }
