@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, Bell, CalendarBlank, Check, CheckCircle, CreditC
 import { changes, normalizeUrl } from "./model.js";
 import { Setup, Dashboard, Report, Weekly } from "./Views.jsx";
 import { Pricing, Checkout, Product } from "./Marketing.jsx";
-import { AboutPage, BeautyMonitoringGuide, MethodologyPage, SnapshotTool, SummerFridaysBrand, SummerFridaysSnapshot } from "./PublicPages.jsx";
+import { AboutPage, BeautyMonitoringGuide, MethodologyPage, PrivacyPage, SnapshotTool, SummerFridaysBrand, SummerFridaysSnapshot } from "./PublicPages.jsx";
 
 const DEPLOY_BASE = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 const assetUrl = (name) => `${DEPLOY_BASE}/assets/${name}`;
@@ -15,6 +15,7 @@ const PUBLIC_ROUTE_PATHS = {
   "guide/monitoring": "/guides/how-to-track-beauty-competitors",
   methodology: "/methodology",
   about: "/about",
+  privacy: "/privacy",
 };
 const PUBLIC_PATHS = Object.fromEntries(Object.entries(PUBLIC_ROUTE_PATHS).map(([route, path]) => [route, path === "/" ? `${DEPLOY_BASE}/` : `${DEPLOY_BASE}${path}/`]));
 
@@ -64,7 +65,7 @@ function MarketingNav({ go }) {
 }
 
 function Footer({ go }) {
-  return <footer className="site-footer"><div><Brand go={go} /><p>A clearer view of your beauty market.</p></div><nav aria-label="Footer navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["methodology", "Methodology"], ["about", "About"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id]} onClick={(e) => { e.preventDefault(); go(id); }}>{label}</a>)}</nav><small>© 2026 RivalTrace · Public brand references are cited. Sample changes remain clearly labeled.</small></footer>;
+  return <footer className="site-footer"><div><Brand go={go} /><p>A clearer view of your beauty market.</p></div><nav aria-label="Footer navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["methodology", "Methodology"], ["about", "About"], ["privacy", "Privacy"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id]} onClick={(e) => { e.preventDefault(); go(id); }}>{label}</a>)}</nav><small>© 2026 RivalTrace · Public brand references are cited. Sample changes remain clearly labeled.</small></footer>;
 }
 
 function UrlForm({ value, setValue, onSubmit, id = "competitor-url", button = "Start tracking", disabled = false }) {
@@ -128,6 +129,7 @@ export function App() {
       guide: ["How to Track Beauty Competitors", "A practical evidence-first guide to monitoring beauty competitor price, product and promotion changes."],
       methodology: ["Competitor Monitoring Methodology", "How RivalTrace records public beauty storefront facts, validates comparisons and separates evidence from interpretation."],
       about: ["About RivalTrace", "RivalTrace is an evidence-first beauty competitor monitoring product for independent brands and lean teams."],
+      privacy: ["Privacy & Analytics", "How RivalTrace handles local captures, optional website analytics and your privacy choices."],
       app: ["Your Watchlist", "RivalTrace sample beauty competitor watchlist."],
       report: ["Sample Evidence", "RivalTrace sample evidence report."],
       weekly: ["Weekly Brief", "RivalTrace sample weekly brief."],
@@ -192,6 +194,7 @@ export function App() {
   else if (page === "guide") content = <BeautyMonitoringGuide go={go} />;
   else if (page === "methodology") content = <MethodologyPage go={go} />;
   else if (page === "about") content = <AboutPage go={go} />;
+  else if (page === "privacy") content = <PrivacyPage go={go} />;
   else if (page === "setup") content = <Setup go={go} shopUrl={shopUrl} setShopUrl={setShopUrl} onBaseline={setBaseline} />;
   else if (page === "app") content = <Dashboard go={go} openReport={openReport} baseline={baseline} decisions={decisions} />;
   else if (page === "weekly") content = <Weekly go={go} openReport={openReport} decisions={decisions} />;

@@ -11,6 +11,7 @@ const routes = [
   { path: "/guides/how-to-track-beauty-competitors/", file: "guides/how-to-track-beauty-competitors/index.html", title: "How to Track Beauty Competitors", description: "A practical evidence-first guide to monitoring beauty competitor price, product and promotion changes.", heading: "How to track beauty competitors without inventing the story", summary: "Save a dated baseline, compare the same page and variant later, and keep interpretation separate from evidence.", type: "Article" },
   { path: "/methodology/", file: "methodology/index.html", title: "Competitor Monitoring Methodology", description: "How RivalTrace records public beauty storefront facts, validates comparisons and separates evidence from interpretation.", heading: "Evidence before interpretation", summary: "RivalTrace records observable storefront facts and calls something a change only after a valid like-for-like comparison.", type: "WebPage" },
   { path: "/about/", file: "about/index.html", title: "About RivalTrace", description: "RivalTrace is an evidence-first beauty competitor monitoring product for independent brands and lean teams.", heading: "A clearer view of the beauty market", summary: "Learn what RivalTrace does, what it cannot establish from public pages, and why the product starts with beauty.", type: "AboutPage" },
+  { path: "/privacy/", file: "privacy/index.html", title: "Privacy & Analytics", description: "How RivalTrace handles local captures, optional website analytics and your privacy choices.", heading: "Your research stays yours", summary: "Local snapshot details stay on your device. Optional usage analytics loads only after consent and never includes form contents or payment details.", type: "WebPage" },
 ];
 
 const coreLinks = [
@@ -18,6 +19,7 @@ const coreLinks = [
   ["Beauty competitor monitoring guide", "/guides/how-to-track-beauty-competitors/"],
   ["RivalTrace methodology", "/methodology/"],
   ["About RivalTrace", "/about/"],
+  ["Privacy and analytics", "/privacy/"],
 ];
 
 function escapeHtml(value) {

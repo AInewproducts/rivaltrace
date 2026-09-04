@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => ({
         monitoringGuide: resolve(import.meta.dirname, "guides/how-to-track-beauty-competitors/index.html"),
         methodology: resolve(import.meta.dirname, "methodology/index.html"),
         about: resolve(import.meta.dirname, "about/index.html"),
+        privacy: resolve(import.meta.dirname, "privacy/index.html"),
       },
     },
   },

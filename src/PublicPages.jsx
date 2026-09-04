@@ -201,3 +201,18 @@ export function AboutPage({ go }) {
     <Footer go={go} />
   </main>;
 }
+
+export function PrivacyPage({ go }) {
+  return <main className="about-page trust-page">
+    <MarketingNav go={go} />
+    <Breadcrumbs items={[["Home", () => go("home")], ["Privacy & analytics", null]]} />
+    <article className="trust-article section-container">
+      <header className="trust-hero"><p className="eyebrow">Privacy & analytics · Updated September 4, 2026</p><h1>Your research stays yours.</h1><p className="guide-lede">The free snapshot stores competitor URLs, capture fields and notes in your browser. Optional Google Analytics loads only after you choose <strong>Allow analytics</strong>.</p></header>
+      <section className="about-grid"><article><p className="eyebrow">Local product data</p><h2>Snapshot details stay on this device.</h2><p>The current free tool does not send your competitor URL, product label, price, availability, promotion text or notes to RivalTrace or Google Analytics.</p></article><article><p className="eyebrow">Optional usage data</p><h2>We measure pages and feature actions.</h2><p>After consent, Google Analytics may receive page views, approximate device and location information, origin-level referrer data and fixed RivalTrace interactions such as opening the demo or attempting a snapshot.</p></article></section>
+      <section className="why-beauty"><div><p className="eyebrow">What is excluded</p><h2>No form contents or payment details.</h2></div><p>Analytics events use fixed labels. They do not include values typed into RivalTrace forms, capture notes, competitor page contents or payment credentials. Advertising personalization and Google Signals are disabled in the site configuration.</p></section>
+      <section className="current-state"><div className="trust-section-heading"><p className="eyebrow">Your choice</p><h2>Optional means optional.</h2></div><div className="method-cards">{[["Before consent", "The Google Analytics script is not loaded and no analytics event is sent."], ["Allow analytics", "Usage events without RivalTrace form contents help us understand acquisition pages and product activation."], ["No thanks", "The site and free snapshot continue to work without analytics."], ["Change later", "Use the Privacy choices button at the bottom-left of any page to update your decision."]].map(([title, body]) => <article key={title}><ShieldCheck size={23} /><h3>{title}</h3><p>{body}</p></article>)}</div></section>
+      <section className="report-next"><div><p className="eyebrow">Analytics provider</p><h2>Google Analytics 4</h2><p>Google processes consented analytics events under its own privacy and data controls. Browser do-not-track settings are respected by this site.</p></div><a className="outline-button" href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">Google privacy policy <ArrowSquareOut size={18} /></a></section>
+    </article>
+    <Footer go={go} />
+  </main>;
+}
