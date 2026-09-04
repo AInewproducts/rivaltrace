@@ -1,17 +1,71 @@
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check, CheckCircle } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, Check } from "@phosphor-icons/react";
 import { Brand, Badge, DemoNote, Footer, MarketingNav, Steps } from "./App.jsx";
+import { PayPalSubscription, SubscriptionSuccess } from "./PayPalSubscription.jsx";
 import { plans, planQuote } from "./model.js";
 
 export function Pricing({ go, annual, setAnnual, setPlan }) {
-  return <main className="pricing-page"><MarketingNav go={go} /><section className="pricing-heading"><p className="eyebrow">Room to grow, at your pace</p><h1>A clearer view.<br />A plan that fits.</h1><p>Explore the proposed plans for your beauty workspace.<br />Pricing is illustrative. Subscriptions are not available yet.</p><div className="billing-toggle" role="group" aria-label="Billing period"><button className={!annual ? "active" : ""} aria-pressed={!annual} onClick={() => setAnnual(false)}>Monthly</button><button className={annual ? "active" : ""} aria-pressed={annual} onClick={() => setAnnual(true)}>Yearly <span>Save 20%</span></button></div></section><section className="plans">{Object.entries(plans).map(([name, plan]) => { const quote = planQuote(name, annual); return <article key={name} className={name === "Growth" ? "featured" : ""}>{name === "Growth" && <Badge>For growing teams</Badge>}<h2>{name}</h2><p>{plan.label}</p><div className="price"><strong>{"$" + quote.monthly}</strong><span>/ month</span></div><small>{annual ? "$" + quote.total.toFixed(2) + " billed yearly" : "Billed monthly"}</small><button className={name === "Growth" ? "primary-button" : "outline-button"} onClick={() => { setPlan(name); go("checkout"); }}>Preview {name}<ArrowRight size={19} /></button><ul>{["Up to " + plan.competitors + " competitors", "Public product, price & copy tracking", "Before-and-after evidence", "In-app weekly review"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul></article>; })}</section><DemoNote>No charge. Checkout is a simulation using fixed test details.</DemoNote><Footer go={go} /></main>;
+  return <main className="pricing-page">
+    <MarketingNav go={go} />
+    <section className="pricing-heading">
+      <p className="eyebrow">Room to grow, at your pace</p>
+      <h1>A clearer view.<br />A plan that fits.</h1>
+      <p>Choose a recurring RivalTrace plan for your beauty workspace.<br />PayPal handles approval, billing and cancellation securely.</p>
+      <div className="billing-toggle" role="group" aria-label="Billing period">
+        <button className={!annual ? "active" : ""} aria-pressed={!annual} onClick={() => setAnnual(false)}>Monthly</button>
+        <button className={annual ? "active" : ""} aria-pressed={annual} onClick={() => setAnnual(true)}>Yearly <span>Save 20%</span></button>
+      </div>
+    </section>
+    <section className="plans">{Object.entries(plans).map(([name, plan]) => {
+      const quote = planQuote(name, annual);
+      return <article key={name} className={name === "Growth" ? "featured" : ""}>
+        {name === "Growth" && <Badge>For growing teams</Badge>}
+        <h2>{name}</h2>
+        <p>{plan.label}</p>
+        <div className="price"><strong>{"$" + quote.monthly}</strong><span>/ month</span></div>
+        <small>{annual ? `$${quote.total.toFixed(2)} billed yearly` : "Billed monthly"}</small>
+        <button className={name === "Growth" ? "primary-button" : "outline-button"} onClick={() => { setPlan(name); go("checkout"); }}>Choose {name}<ArrowRight size={19} /></button>
+        <ul>{["Up to " + plan.competitors + " competitors", "Public product, price & copy tracking", "Before-and-after evidence", "In-app weekly review"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
+      </article>;
+    })}</section>
+    <DemoNote>PayPal Sandbox is used while billing is being verified. No real payment method can be charged until live payments are explicitly enabled.</DemoNote>
+    <Footer go={go} />
+  </main>;
 }
 
 export function Checkout({ go, selectedPlan, annual }) {
-  const [paid, setPaid] = useState(false);
+  const [subscription, setSubscription] = useState(null);
   const plan = plans[selectedPlan];
   const quote = planQuote(selectedPlan, annual);
-  return <main className="checkout-page"><header className="simple-header"><Brand go={go} /><Badge>Simulation only</Badge></header>{paid ? <section className="success-card"><CheckCircle size={62} /><p className="eyebrow">Demo complete</p><h1>A clearer view<br />is waiting.</h1><p>You have previewed the {selectedPlan} checkout. No subscription was created, no payment was processed, and no monitoring has started.</p><button className="primary-button" onClick={() => go("app")}>Explore the workspace<ArrowRight size={20} /></button></section> : <section className="checkout-shell"><div className="checkout-form-wrap"><a className="back-link" href="#pricing"><ArrowLeft size={18} />Back to plans</a><p className="eyebrow">A preview of your next step</p><h1>Make room for<br />a clearer picture.</h1><p>Use the fixed demo details below. Please do not enter real payment information.</p><form className="checkout-form" onSubmit={(e) => { e.preventDefault(); setPaid(true); }}><label>Email<input value="demo@example.com" readOnly autoComplete="off" /></label><label>Workspace<input value="Beauty workspace" readOnly /></label><label>Test card<input value="4242 4242 4242 4242" readOnly autoComplete="off" /></label><div className="field-pair"><label>Expiry<input value="12/30" readOnly /></label><label>CVC<input value="123" readOnly /></label></div><button className="primary-button" type="submit">Complete demo checkout<ArrowRight size={20} /></button><DemoNote>Simulation only. No data is sent or charged.</DemoNote></form></div><aside className="order-summary"><p className="eyebrow">Your sample plan</p><h2>{selectedPlan}</h2><p>{plan.label}</p><div className="price"><strong>{"$" + quote.monthly}</strong><span>/ month</span></div><p>{annual ? "Yearly billing · 20% discount" : "Monthly billing"}</p><ul><li><Check size={18} />{plan.competitors} competitors</li><li><Check size={18} />Timestamped evidence</li><li><Check size={18} />Weekly review</li></ul><div className="total-row"><span>Example {annual ? "yearly" : "monthly"} total</span><strong>{"$" + quote.total.toFixed(2)}</strong></div><div className="total-row"><span>Charged today</span><strong>$0.00</strong></div></aside></section>}</main>;
+  const planCode = `${selectedPlan.toLowerCase()}-${annual ? "yearly" : "monthly"}`;
+
+  return <main className="checkout-page">
+    <header className="simple-header"><Brand go={go} /><Badge>PayPal Sandbox</Badge></header>
+    {subscription
+      ? <SubscriptionSuccess subscription={subscription} selectedPlan={selectedPlan} go={go} />
+      : <section className="checkout-shell">
+        <div className="checkout-form-wrap">
+          <a className="back-link" href="#pricing"><ArrowLeft size={18} />Back to plans</a>
+          <p className="eyebrow">Secure recurring checkout</p>
+          <h1>Make room for<br />a clearer picture.</h1>
+          <p>Approve your automatically renewing subscription in PayPal. RivalTrace never receives or stores your card details.</p>
+          <div className="checkout-form">
+            <PayPalSubscription planCode={planCode} onSubscribed={setSubscription} />
+            <DemoNote>Sandbox testing only. Approval creates a test subscription, not a real charge.</DemoNote>
+          </div>
+        </div>
+        <aside className="order-summary">
+          <p className="eyebrow">Your plan</p>
+          <h2>{selectedPlan}</h2>
+          <p>{plan.label}</p>
+          <div className="price"><strong>{"$" + quote.monthly}</strong><span>/ month</span></div>
+          <p>{annual ? "Yearly billing · 20% discount" : "Monthly billing"}</p>
+          <ul><li><Check size={18} />{plan.competitors} competitors</li><li><Check size={18} />Timestamped evidence</li><li><Check size={18} />Weekly review</li></ul>
+          <div className="total-row"><span>{annual ? "Recurring yearly total" : "Recurring monthly total"}</span><strong>{"$" + quote.total.toFixed(2)}</strong></div>
+          <p className="renewal-note">Renews automatically until you cancel. You can manage or cancel the subscription from your PayPal account.</p>
+        </aside>
+      </section>}
+  </main>;
 }
 
 export function Product({ go }) {

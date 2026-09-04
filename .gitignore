@@ -5,3 +5,8 @@ dist/
 implementation-*.png
 qa-*.png
 qa-pink/
+.env
+.env.local
+.dev.vars
+.dev.vars.*
+wrangler.payments.jsonc

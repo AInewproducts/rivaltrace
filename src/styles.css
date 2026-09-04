@@ -216,6 +216,18 @@ progress { width: 100%; height: 8px; margin-top: 20px; accent-color: var(--berry
 .checkout-form input { width: 100%; height: 48px; border: 1px solid var(--line); border-radius: 7px; padding: 0 14px; color: #766670; background: #fcf9fb; }
 .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .checkout-form .demo-note { margin: 0; font-size: 11px; }
+.paypal-subscription { display: grid; gap: 14px; min-height: 118px; }
+.payment-state { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fffafd; color: var(--ink); }
+.payment-state svg { flex: 0 0 auto; color: var(--berry); }
+.payment-state strong { display: block; margin-bottom: 4px; font-size: 13px; }
+.payment-state p, .checkout-message, .subscription-safety { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.payment-state-error { border-color: #e9a8be; background: #fff4f8; }
+.payment-spinner { width: 20px; height: 20px; flex: 0 0 auto; border: 2px solid #ead4df; border-top-color: var(--berry); border-radius: 50%; animation: payment-spin .8s linear infinite; }
+.subscription-safety { display: flex; align-items: flex-start; gap: 7px; padding: 11px 12px; border-radius: 8px; background: var(--pink); color: #735467; }
+.subscription-safety svg { flex: 0 0 auto; margin-top: 1px; color: var(--berry); }
+.renewal-note { margin-top: 22px; padding-top: 20px; border-top: 1px solid #e5c9d9; line-height: 1.6; }
+.subscription-reference { overflow-wrap: anywhere; font-family: "IBM Plex Mono", monospace; font-size: 11px !important; }
+@keyframes payment-spin { to { transform: rotate(360deg); } }
 .order-summary { padding: 50px 36px; border-left: 1px solid var(--line); background: var(--pink); }
 .order-summary h2 { font-size: 36px; margin: 20px 0; }
 .order-summary p { font-size: 13px; color: #735467; }

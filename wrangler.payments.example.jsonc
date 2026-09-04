@@ -1,0 +1,24 @@
+{
+  "name": "rivaltrace-payments",
+  "main": "payment-worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "vars": {
+    "PAYPAL_ENV": "sandbox",
+    "LIVE_PAYMENTS_ENABLED": "false",
+    "PUBLIC_SITE_URL": "https://ainewproducts.github.io/rivaltrace/",
+    "ALLOWED_ORIGINS": "https://ainewproducts.github.io,http://localhost:5173",
+    "PAYPAL_PLAN_STARTER_MONTHLY": "P-SANDBOX_PLAN_ID",
+    "PAYPAL_PLAN_STARTER_YEARLY": "P-SANDBOX_PLAN_ID",
+    "PAYPAL_PLAN_GROWTH_MONTHLY": "P-SANDBOX_PLAN_ID",
+    "PAYPAL_PLAN_GROWTH_YEARLY": "P-SANDBOX_PLAN_ID",
+    "PAYPAL_PLAN_AGENCY_MONTHLY": "P-SANDBOX_PLAN_ID",
+    "PAYPAL_PLAN_AGENCY_YEARLY": "P-SANDBOX_PLAN_ID"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "rivaltrace-payments",
+      "database_id": "REPLACE_AFTER_D1_CREATION"
+    }
+  ]
+}
