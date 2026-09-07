@@ -28,7 +28,7 @@ export function Pricing({ go, annual, setAnnual, setPlan }) {
         <ul>{["Up to " + plan.competitors + " competitors", "Public product, price & copy tracking", "Before-and-after evidence", "In-app weekly review"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
       </article>;
     })}</section>
-    <DemoNote>PayPal Sandbox is used while billing is being verified. No real payment method can be charged until live payments are explicitly enabled.</DemoNote>
+    <DemoNote>Recurring subscriptions are processed securely by PayPal. You can manage or cancel your plan from your PayPal account.</DemoNote>
     <Footer go={go} />
   </main>;
 }
@@ -40,7 +40,7 @@ export function Checkout({ go, selectedPlan, annual }) {
   const planCode = `${selectedPlan.toLowerCase()}-${annual ? "yearly" : "monthly"}`;
 
   return <main className="checkout-page">
-    <header className="simple-header"><Brand go={go} /><Badge>PayPal Sandbox</Badge></header>
+    <header className="simple-header"><Brand go={go} /><Badge>Secure PayPal</Badge></header>
     {subscription
       ? <SubscriptionSuccess subscription={subscription} selectedPlan={selectedPlan} go={go} />
       : <section className="checkout-shell">
@@ -51,7 +51,7 @@ export function Checkout({ go, selectedPlan, annual }) {
           <p>Approve your automatically renewing subscription in PayPal. RivalTrace never receives or stores your card details.</p>
           <div className="checkout-form">
             <PayPalSubscription planCode={planCode} onSubscribed={setSubscription} />
-            <DemoNote>Sandbox testing only. Approval creates a test subscription, not a real charge.</DemoNote>
+            <DemoNote>By approving, you start an automatically renewing subscription at the price shown. Cancel anytime from your PayPal account.</DemoNote>
           </div>
         </div>
         <aside className="order-summary">
@@ -69,5 +69,5 @@ export function Checkout({ go, selectedPlan, annual }) {
 }
 
 export function Product({ go }) {
-  return <main className="product-page"><MarketingNav go={go} /><section className="product-hero"><p className="eyebrow">The RivalTrace method</p><h1>Notice the change.<br />Keep the context.</h1><p>A simple workflow for following public beauty storefronts.<br />Evidence first. Your judgment always.</p><button className="primary-button" onClick={() => go("setup")}>Explore the demo<ArrowRight size={20} /></button></section><Steps /><section className="method-grid section-container">{[["01", "Watch the public page", "Pick comparable products or a promotion page. The initial service is planned for public-page monitoring, without third-party data APIs."], ["02", "Compare like with like", "Save a baseline, then compare later captures. Retain the currency, product variant, source URL and time of each observation."], ["03", "Make your own call", "Review the evidence and record your decision. A price change is an observation, not proof of a competitor’s sales or strategy."]].map(([n, title, text]) => <article key={n}><span className="eyebrow">{n}</span><h2>{title}</h2><p>{text}</p></article>)}</section><DemoNote /><Footer go={go} /></main>;
+  return <main className="product-page"><MarketingNav go={go} /><section className="product-hero"><p className="eyebrow">The RivalTrace method</p><h1>Notice the change.<br />Keep the context.</h1><p>A simple workflow for following public beauty storefronts.<br />Evidence first. Your judgment always.</p><button className="primary-button" onClick={() => go("setup")}>Explore the demo<ArrowRight size={20} /></button></section><Steps /><section className="method-grid section-container">{[["01", "Watch the public page", "Pick comparable products or a promotion page. The current service uses a manual browser-based evidence workflow without third-party data APIs."], ["02", "Compare like with like", "Save a baseline, then compare later captures. Retain the currency, product variant, source URL and time of each observation."], ["03", "Make your own call", "Review the evidence and record your decision. A price change is an observation, not proof of a competitor’s sales or strategy."]].map(([n, title, text]) => <article key={n}><span className="eyebrow">{n}</span><h2>{title}</h2><p>{text}</p></article>)}</section><DemoNote /><Footer go={go} /></main>;
 }

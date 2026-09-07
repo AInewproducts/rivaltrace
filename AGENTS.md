@@ -15,7 +15,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Continue to avoid beige, cream, ivory, tan, brown, taupe, parchment, or warm-white surfaces.
 - Homepage conversion order is: value proposition, competitor URL input, sample evidence trail.
 - Logged-in core flow is: Today's radar → evidence report → adopt/later/ignore decision.
-- The demo includes plan selection and a clearly labeled non-production payment simulation.
+- The production site includes plan selection and PayPal automatically renewing subscriptions. Sandbox-only copy must never appear after Live billing is enabled, and no agent may complete a real purchase without explicit confirmation at action time.
 - Use Inter for product and display text, IBM Plex Mono for metadata, and Phosphor icons for interface iconography.
 
 ## Initial launch constraint — 2026-08-28
@@ -23,4 +23,4 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - The user rejected API spending and requested an initial version without third-party APIs; AI and other integrations may be added later only when users demonstrate demand.
 - Do not create API keys, call paid AI services, or replace them with free-tier third-party APIs as a workaround.
 - The proposed zero-external-API launch approach is documented in `RivalTrace-no-api-launch-plan.md`. It is a proposal, not an implemented or deployed service.
-- Keep factual change detection separate from interpretation. Never present rules/templates as AI-generated insight, invent historical snapshots, or represent the existing simulated checkout as real payment.
+- Keep factual change detection separate from interpretation. Never present rules/templates as AI-generated insight or invent historical snapshots. Production checkout is real recurring PayPal billing; sandbox and production states must remain visibly distinct.

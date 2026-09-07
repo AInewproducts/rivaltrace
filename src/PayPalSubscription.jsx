@@ -11,13 +11,13 @@ async function readJson(response) {
 }
 
 function apiRequest(path, init) {
-  if (!PAYMENT_API_BASE) return Promise.reject(new Error("PayPal Sandbox is not connected to this deployment yet."));
+  if (!PAYMENT_API_BASE) return Promise.reject(new Error("PayPal checkout is not connected to this deployment yet."));
   return fetch(`${PAYMENT_API_BASE}${path}`, init);
 }
 
 export function PayPalSubscription({ planCode, onSubscribed }) {
   const [config, setConfig] = useState(null);
-  const [status, setStatus] = useState("Loading secure PayPal Sandbox checkout…");
+  const [status, setStatus] = useState("Loading secure PayPal checkout…");
   const [error, setError] = useState("");
   const plan = config?.plans?.[planCode];
 

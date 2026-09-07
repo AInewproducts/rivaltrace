@@ -21,4 +21,4 @@ Primary website: https://ainewproducts.github.io/rivaltrace/
 
 ## Current product boundary
 
-The free snapshot tool is manual and local to the browser. It does not use an external API, fetch competitor pages, sync to an account, process payments or run background monitoring.
+The free snapshot tool is manual and local to the browser. It does not use an external data API, fetch competitor pages, sync to an account or run background monitoring. Paid subscriptions are processed separately by PayPal.

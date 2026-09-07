@@ -23,8 +23,9 @@ function json(request, env, body, status = 200) {
   return Response.json(body, { status, headers: corsHeaders(request, env) });
 }
 
-function safeError(error) {
+function safeError(error, env) {
   const message = error instanceof Error ? error.message : "Subscription service error.";
+  if (env.PAYPAL_ENV !== "live") return message;
   if (/Unknown RivalTrace|not provisioned|disabled|Invalid/.test(message)) return message;
   return "The PayPal subscription service could not complete this request.";
 }
@@ -91,7 +92,12 @@ async function paypalRequest(env, path, init = {}) {
     headers: { Authorization: `Bearer ${await accessToken(env)}`, "Content-Type": "application/json", "PayPal-Request-Id": crypto.randomUUID(), ...(init.headers || {}) },
   });
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(typeof body.message === "string" ? body.message : "PayPal request failed.");
+  if (!response.ok) {
+    const details = Array.isArray(body.details)
+      ? body.details.map((detail) => [detail.issue, detail.field, detail.description].filter(Boolean).join(": ")).filter(Boolean).join("; ")
+      : "";
+    throw new Error([`PayPal request failed (${response.status})`, body.name, body.message, details].filter(Boolean).join(": "));
+  }
   return body;
 }
 
@@ -171,7 +177,7 @@ async function processWebhook(request, env) {
   const nextStatus = EVENT_STATUS[event.event_type] || null;
   const now = Date.now();
   const statements = [env.DB.prepare("INSERT INTO paypal_webhook_events (event_id, event_type, subscription_id, received_at) VALUES (?1, ?2, ?3, ?4)").bind(event.id, event.event_type, subscriptionId, now)];
-  if (subscriptionId && nextStatus) statements.push(env.DB.prepare("UPDATE paypal_subscriptions SET status = ?1, updated_at = ?2, cancelled_at = CASE WHEN ?1 = 'CANCELLED' THEN ?2 ELSE cancelled_at END WHERE subscription_id = ?3").bind(nextStatus, now, subscriptionId));
+  if (subscriptionId && nextStatus) statements.push(env.DB.prepare("UPDATE paypal_subscriptions SET status = ?1, updated_at = ?2, activated_at = CASE WHEN ?1 = 'ACTIVE' THEN COALESCE(activated_at, ?2) ELSE activated_at END, cancelled_at = CASE WHEN ?1 = 'CANCELLED' THEN ?2 ELSE cancelled_at END WHERE subscription_id = ?3").bind(nextStatus, now, subscriptionId));
   await env.DB.batch(statements);
   return json(request, env, { received: true });
 }
@@ -195,6 +201,13 @@ async function handle(request, env) {
 export default {
   async fetch(request, env) {
     try { return await handle(request, env); }
-    catch (error) { return json(request, env, { error: safeError(error) }, /Invalid|Unknown|not provisioned/.test(error?.message || "") ? 400 : 502); }
+    catch (error) {
+      console.error("RivalTrace payment worker request failed", {
+        method: request.method,
+        path: new URL(request.url).pathname,
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
+      return json(request, env, { error: safeError(error, env) }, /Invalid|Unknown|not provisioned/.test(error?.message || "") ? 400 : 502);
+    }
   },
 };

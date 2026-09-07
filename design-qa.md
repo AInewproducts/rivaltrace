@@ -27,7 +27,7 @@ The selected composition is preserved: cool-pink hero, centered eyebrow/title, U
 - Spacing and layout rhythm: Centered hero, form, watchlist and steps match the reference composition. Desktop and 390px mobile have no horizontal overflow. Mobile intentionally hides decorative product cutouts and stacks each table row.
 - Colors and tokens: cool pale pink, white, plum, raspberry, lilac and mint replace the legacy black/cobalt palette. Contrast and focus states remain distinct.
 - Image quality: both product photographs are generated raster assets. Transparent WebP cutouts remove the pass-1 rectangular backdrop mismatch; supporting WebP photos are compressed to 28–36 KB and cutouts to 88–184 KB.
-- Copy and content: homepage and product flow describe observable public changes. Fictional examples, first-capture baseline behavior, no-API limitation, and simulated checkout are explicitly disclosed.
+- Copy and content: homepage and product flow describe observable public changes. Fictional examples, first-capture baseline behavior, no-API limitation, real recurring PayPal billing, and the lack of background monitoring are explicitly disclosed.
 - Icons: Phosphor icons are used consistently; no hand-built SVG or CSS illustration substitutes.
 - Accessibility and responsive behavior: labels, focus treatment, skip link, alerts, pressed states, progress state, reduced-motion handling, menu state, mobile tap targets and alt text were checked. Browser console had no errors or warnings.
 
@@ -40,7 +40,7 @@ The selected composition is preserved: cool-pink hero, centered eyebrow/title, U
 - Evidence decision: Adopt / Later / Ignore.
 - Mobile navigation.
 - Monthly/yearly price toggle; Growth $63.20 monthly equivalent and $758.40 yearly total remain consistent in checkout.
-- Demo checkout completion confirms $0 charged and no subscription/monitoring started.
+- Production checkout QA stops before approval so no real subscription or charge is created; Sandbox-only end-to-end tests remain separate from Live verification.
 - All requested images loaded; no third-party API calls were added.
 
 ## Comparison history
