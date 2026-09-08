@@ -1,12 +1,28 @@
 export const ANALYTICS_MEASUREMENT_ID = "G-SP4RSW5E92";
 export const ANALYTICS_CONSENT_KEY = "rivaltrace_analytics_consent";
+export const ANALYTICS_INTERNAL_KEY = "rivaltrace_internal_traffic";
 
 const ROUTE_CHANGE_EVENT = "rivaltrace:route-change";
 let analyticsStarted = false;
 let trackingInstalled = false;
 
+function readInternalTrafficPreference() {
+  try {
+    const marker = new URLSearchParams(window.location.search).get("rt_internal");
+    if (marker === "1") window.localStorage.setItem(ANALYTICS_INTERNAL_KEY, "1");
+    if (marker === "0") window.localStorage.removeItem(ANALYTICS_INTERNAL_KEY);
+    return window.localStorage.getItem(ANALYTICS_INTERNAL_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function isInternalTraffic() {
+  return readInternalTrafficPreference();
+}
+
 export function analyticsAllowedByBrowser() {
-  return navigator.doNotTrack !== "1" && window.doNotTrack !== "1";
+  return navigator.doNotTrack !== "1" && window.doNotTrack !== "1" && !isInternalTraffic();
 }
 
 export function readAnalyticsConsent() {
@@ -44,10 +60,6 @@ export function trackPageView() {
     page_location: currentSafeLocation(),
     page_path: currentPagePath(),
   });
-
-  if (window.location.hash.startsWith("#checkout")) {
-    trackEvent("begin_checkout", { checkout_type: "subscription" });
-  }
 }
 
 function identifyInteraction(element) {

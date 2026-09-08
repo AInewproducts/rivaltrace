@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PayPalProvider, PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
 import { CheckCircle, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import { trackEvent } from "./analytics.js";
 
 const PAYMENT_API_BASE = (import.meta.env.VITE_PAYMENT_API_BASE || "").replace(/\/$/, "");
 
@@ -48,15 +49,23 @@ export function PayPalSubscription({ planCode, onSubscribed }) {
         createSubscription={async () => {
           setError("");
           setStatus("Creating your subscription securely…");
-          const subscription = await readJson(await apiRequest("/api/paypal/subscriptions", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ planCode }),
-          }));
-          if (typeof subscription.subscriptionId !== "string") throw new Error("PayPal did not return a subscription ID.");
-          return { subscriptionId: subscription.subscriptionId };
+          trackEvent("subscription_create_attempt", { plan_code: planCode, payment_provider: "paypal" });
+          try {
+            const subscription = await readJson(await apiRequest("/api/paypal/subscriptions", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ planCode }),
+            }));
+            if (typeof subscription.subscriptionId !== "string") throw new Error("PayPal did not return a subscription ID.");
+            trackEvent("subscription_created", { plan_code: planCode, payment_provider: "paypal" });
+            return { subscriptionId: subscription.subscriptionId };
+          } catch (nextError) {
+            trackEvent("subscription_error", { plan_code: planCode, payment_provider: "paypal", error_stage: "create" });
+            throw nextError;
+          }
         }}
         onApprove={async ({ subscriptionId }) => {
+          trackEvent("subscription_approval_received", { plan_code: planCode, payment_provider: "paypal" });
           try {
             setStatus("Verifying the subscription with PayPal…");
             const verified = await readJson(await apiRequest("/api/paypal/subscriptions/verify", {
@@ -67,13 +76,21 @@ export function PayPalSubscription({ planCode, onSubscribed }) {
             if (verified.status !== "ACTIVE" || typeof verified.entitlementToken !== "string") throw new Error("PayPal has not activated this subscription.");
             localStorage.setItem("rivaltrace_subscription_v1", JSON.stringify({ entitlementToken: verified.entitlementToken, planCode, subscriptionId, savedAt: new Date().toISOString() }));
             setStatus("Subscription active and verified.");
+            trackEvent("subscription_activated", { plan_code: planCode, payment_provider: "paypal" });
             onSubscribed({ ...verified, planCode, subscriptionId });
           } catch (nextError) {
+            trackEvent("subscription_error", { plan_code: planCode, payment_provider: "paypal", error_stage: "verify" });
             setError(nextError instanceof Error ? nextError.message : "The subscription could not be verified.");
           }
         }}
-        onCancel={() => setStatus("Checkout was cancelled. No subscription was created.")}
-        onError={(nextError) => setError(nextError?.message || "PayPal could not complete the subscription.")}
+        onCancel={() => {
+          trackEvent("subscription_cancelled", { plan_code: planCode, payment_provider: "paypal" });
+          setStatus("Checkout was cancelled. No subscription was created.");
+        }}
+        onError={(nextError) => {
+          trackEvent("subscription_error", { plan_code: planCode, payment_provider: "paypal", error_stage: "paypal" });
+          setError(nextError?.message || "PayPal could not complete the subscription.");
+        }}
         presentationMode="auto"
       />
     </PayPalProvider>

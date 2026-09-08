@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "@phosphor-icons/react";
 import { Brand, Badge, DemoNote, Footer, MarketingNav, Steps } from "./App.jsx";
 import { PayPalSubscription, SubscriptionSuccess } from "./PayPalSubscription.jsx";
+import { trackEvent } from "./analytics.js";
 import { plans, planQuote } from "./model.js";
 
 export function Pricing({ go, annual, setAnnual, setPlan }) {
@@ -24,7 +25,11 @@ export function Pricing({ go, annual, setAnnual, setPlan }) {
         <p>{plan.label}</p>
         <div className="price"><strong>{"$" + quote.monthly}</strong><span>/ month</span></div>
         <small>{annual ? `$${quote.total.toFixed(2)} billed yearly` : "Billed monthly"}</small>
-        <button className={name === "Growth" ? "primary-button" : "outline-button"} onClick={() => { setPlan(name); go("checkout"); }}>Choose {name}<ArrowRight size={19} /></button>
+        <button className={name === "Growth" ? "primary-button" : "outline-button"} onClick={() => {
+          trackEvent("select_plan", { plan_code: `${name.toLowerCase()}-${annual ? "yearly" : "monthly"}`, billing_period: annual ? "yearly" : "monthly" });
+          setPlan(name);
+          go("checkout");
+        }}>Choose {name}<ArrowRight size={19} /></button>
         <ul>{["Up to " + plan.competitors + " competitors", "Public product, price & copy tracking", "Before-and-after evidence", "In-app weekly review"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
       </article>;
     })}</section>
@@ -38,6 +43,10 @@ export function Checkout({ go, selectedPlan, annual }) {
   const plan = plans[selectedPlan];
   const quote = planQuote(selectedPlan, annual);
   const planCode = `${selectedPlan.toLowerCase()}-${annual ? "yearly" : "monthly"}`;
+
+  useEffect(() => {
+    trackEvent("begin_checkout", { checkout_type: "subscription", plan_code: planCode, billing_period: annual ? "yearly" : "monthly", payment_provider: "paypal" });
+  }, [annual, planCode]);
 
   return <main className="checkout-page">
     <header className="simple-header"><Brand go={go} /><Badge>Secure PayPal</Badge></header>

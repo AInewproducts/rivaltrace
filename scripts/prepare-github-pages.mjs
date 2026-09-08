@@ -2,7 +2,7 @@ import { copyFile, readFile, writeFile } from "node:fs/promises";
 
 const output = new URL("../dist/client/", import.meta.url);
 const siteOrigin = "https://ainewproducts.github.io/rivaltrace";
-const modified = "2026-09-01";
+const modified = "2026-09-08";
 const routes = [
   { path: "/", file: "index.html", title: "Beauty Competitor Monitoring", description: "Track public beauty competitor prices, product launches and promotion changes with timestamped evidence.", heading: "Beauty moves fast. Stay in the know.", summary: "RivalTrace helps beauty brands record public price, product and promotion signals with an evidence-first workflow.", type: "WebSite" },
   { path: "/tools/competitor-snapshot/", file: "tools/competitor-snapshot/index.html", title: "Free Competitor Snapshot", description: "Prepare an evidence-first baseline for a public beauty storefront. No account or external data API required.", heading: "Start with what is visible today.", summary: "Save a manual local baseline, then compare the same public page and context later.", type: "WebApplication" },
