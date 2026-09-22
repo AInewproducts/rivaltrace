@@ -8,6 +8,7 @@ Primary website: https://ainewproducts.github.io/rivaltrace/
 - Free competitor snapshot: https://ainewproducts.github.io/rivaltrace/tools/competitor-snapshot/
 - Beauty competitor monitoring guide: https://ainewproducts.github.io/rivaltrace/guides/how-to-track-beauty-competitors/
 - Free beauty competitor price tracking template: https://ainewproducts.github.io/rivaltrace/guides/beauty-competitor-price-tracking-template/
+- Research library (30 guides, 30 worksheets, 30 glossary pages): https://ainewproducts.github.io/rivaltrace/library/
 - Monitoring methodology: https://ainewproducts.github.io/rivaltrace/methodology/
 - About RivalTrace: https://ainewproducts.github.io/rivaltrace/about/
 - Summer Fridays cited brand example: https://ainewproducts.github.io/rivaltrace/beauty-brands/summer-fridays/

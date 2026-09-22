@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { libraryEntries } from "../src/seoLibrary.js";
 
 const pages = [
   ["index.html", "Your beauty watchlist"],
@@ -30,4 +31,28 @@ const template = await readFile(new URL("../dist/client/guides/beauty-competitor
 assert.match(template, /href="\/rivaltrace\/beauty-competitor-price-tracking-template\.csv"/);
 const sitemap = await readFile(new URL("../dist/client/sitemap.xml", import.meta.url), "utf8");
 assert.match(sitemap, /guides\/beauty-competitor-price-tracking-template\//);
-console.log(`Verified ${pages.length} prerendered public pages and noindex 404.`);
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+assert.equal(libraryEntries.length, 90, "expected 90 editorial resources");
+assert.equal(sitemapUrls.length, 100, "expected exactly 100 public sitemap URLs");
+assert.equal(new Set(sitemapUrls).size, 100, "duplicate sitemap URL");
+const hub = await readFile(new URL("../dist/client/library/index.html", import.meta.url), "utf8");
+assert.match(hub, /<h1>Research a beauty market with evidence, not guesses\.<\/h1>/);
+const uniqueTitles = new Set();
+for (const entry of libraryEntries) {
+  const html = await readFile(new URL(`../dist/client/${entry.route}/index.html`, import.meta.url), "utf8");
+  const decoded = html.replaceAll("&amp;", "&").replaceAll("&#x27;", "'").replaceAll("&quot;", '"').replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+  const canonical = `https://ainewproducts.github.io/rivaltrace${entry.path}`;
+  assert.ok(sitemapUrls.includes(canonical), `${entry.route}: missing from sitemap`);
+  assert.ok(hub.includes(`href="/rivaltrace${entry.path}"`), `${entry.route}: missing hub link`);
+  assert.ok(html.includes(`<link rel="canonical" href="${canonical}" />`), `${entry.route}: wrong canonical`);
+  assert.ok(decoded.includes(`<h1>${entry.title}</h1>`), `${entry.route}: wrong heading`);
+  assert.ok(decoded.includes(entry.summary), `${entry.route}: missing summary`);
+  assert.ok(decoded.includes(entry.observe), `${entry.route}: missing task-specific observation`);
+  assert.ok(decoded.includes(entry.decide), `${entry.route}: missing task-specific decision`);
+  assert.ok(decoded.includes(entry.limit), `${entry.route}: missing evidence boundary`);
+  assert.ok(decoded.includes(`content="${entry.summary}"`), `${entry.route}: missing description`);
+  assert.doesNotMatch(html, /class="seo-seed"/, `${entry.route}: summary-only seed`);
+  assert.ok(!uniqueTitles.has(entry.title), `${entry.route}: duplicate title`);
+  uniqueTitles.add(entry.title);
+}
+console.log(`Verified ${pages.length + 1 + libraryEntries.length} prerendered public pages, unique sitemap URLs, and noindex 404.`);

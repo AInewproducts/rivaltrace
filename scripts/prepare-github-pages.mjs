@@ -1,8 +1,9 @@
-import { copyFile, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { createServer } from "vite";
 import react from "@vitejs/plugin-react";
+import { libraryEntries, libraryHubRoute } from "../src/seoLibrary.js";
 
 const output = new URL("../dist/client/", import.meta.url);
 const siteOrigin = "https://ainewproducts.github.io/rivaltrace";
@@ -17,6 +18,8 @@ const routes = [
   { route: "methodology", path: "/methodology/", file: "methodology/index.html", title: "Competitor Monitoring Methodology", description: "How RivalTrace records public beauty storefront facts, validates comparisons and separates evidence from interpretation.", heading: "Evidence before interpretation", modified: "2026-09-01", type: "WebPage" },
   { route: "about", path: "/about/", file: "about/index.html", title: "About RivalTrace", description: "RivalTrace is an evidence-first beauty competitor monitoring product for independent brands and lean teams.", heading: "A clearer view of the beauty market", modified: "2026-09-22", type: "AboutPage" },
   { route: "privacy", path: "/privacy/", file: "privacy/index.html", title: "Privacy & Analytics", description: "How RivalTrace handles local captures, optional website analytics and your privacy choices.", heading: "Your research stays yours", type: "WebPage" },
+  { ...libraryHubRoute, file: "library/index.html", heading: libraryHubRoute.title, type: "CollectionPage", modified: "2026-09-22", generated: true },
+  ...libraryEntries.map((entry) => ({ route: entry.route, path: entry.path, file: `${entry.route}/index.html`, title: entry.title, description: entry.summary, heading: entry.title, type: entry.category === "worksheets" ? "CreativeWork" : "Article", modified: "2026-09-22", generated: true })),
 ];
 
 function escapeHtml(value) {
@@ -51,11 +54,20 @@ function structuredData(route, canonical, image) {
 const vite = await createServer({ configFile: false, plugins: [react()], mode: "github", base: "/rivaltrace/", server: { middlewareMode: true, hmr: false, ws: false, watch: null }, appType: "custom", logLevel: "error" });
 try {
   const { App } = await vite.ssrLoadModule("/src/App.jsx");
+  const indexTemplate = await readFile(new URL("index.html", output), "utf8");
   for (const route of routes) {
     const fileUrl = new URL(route.file, output);
     const canonical = `${siteOrigin}${route.path}`;
     const image = `${siteOrigin}/og.png`;
-    let html = await readFile(fileUrl, "utf8");
+    let html = route.generated ? indexTemplate : await readFile(fileUrl, "utf8");
+    if (route.generated) {
+      html = html
+        .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(route.title)} — RivalTrace</title>`)
+        .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${escapeHtml(route.description)}" />`)
+        .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${escapeHtml(route.title)} — RivalTrace" />`)
+        .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${escapeHtml(route.description)}" />`)
+        .replace(/<meta property="og:type" content="[^"]*" \/>/, `<meta property="og:type" content="${route.type === "Article" ? "article" : "website"}" />`);
+    }
     const page = renderToString(createElement(App, { initialRoute: route.route }));
     if (!page.includes("<main ") || !page.includes("</main>")) throw new Error(`Missing rendered page content for ${route.path}`);
     const head = [
@@ -68,6 +80,7 @@ try {
       `<script id="rivaltrace-structured-data" type="application/ld+json">${JSON.stringify(structuredData(route, canonical, image)).replaceAll("<", "\\u003c")}</script>`,
     ].join("\n    ");
     html = html.replace("</head>", `    ${head}\n  </head>`).replace('<div id="root"></div>', `<div id="root">${page}</div>`);
+    if (route.generated) await mkdir(new URL("./", fileUrl), { recursive: true });
     await writeFile(fileUrl, html);
   }
 } finally {
