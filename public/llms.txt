@@ -7,6 +7,7 @@ Primary website: https://ainewproducts.github.io/rivaltrace/
 
 - Free competitor snapshot: https://ainewproducts.github.io/rivaltrace/tools/competitor-snapshot/
 - Beauty competitor monitoring guide: https://ainewproducts.github.io/rivaltrace/guides/how-to-track-beauty-competitors/
+- Free beauty competitor price tracking template: https://ainewproducts.github.io/rivaltrace/guides/beauty-competitor-price-tracking-template/
 - Monitoring methodology: https://ainewproducts.github.io/rivaltrace/methodology/
 - About RivalTrace: https://ainewproducts.github.io/rivaltrace/about/
 - Summer Fridays cited brand example: https://ainewproducts.github.io/rivaltrace/beauty-brands/summer-fridays/
@@ -21,4 +22,4 @@ Primary website: https://ainewproducts.github.io/rivaltrace/
 
 ## Current product boundary
 
-The free snapshot tool is manual and local to the browser. It does not use an external data API, fetch competitor pages, sync to an account or run background monitoring. Paid subscriptions are processed separately by PayPal.
+The free snapshot tool is manual and local to the browser. It does not use an external data API, fetch competitor pages, sync to an account or run background monitoring. Paid subscriptions are processed separately by PayPal, but do not currently unlock automated monitoring, account sync, alerts or different competitor limits.

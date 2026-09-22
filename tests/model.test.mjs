@@ -34,6 +34,7 @@ test('public acquisition routes have multi-page entry files', async () => {
     '../beauty-brands/summer-fridays/index.html',
     '../reports/summer-fridays-competitor-snapshot/index.html',
     '../guides/how-to-track-beauty-competitors/index.html',
+    '../guides/beauty-competitor-price-tracking-template/index.html',
     '../methodology/index.html',
     '../about/index.html',
   ]) {

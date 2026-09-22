@@ -5,6 +5,7 @@ import test from "node:test";
 const analyticsSource = await readFile(new URL("../src/analytics.js", import.meta.url), "utf8");
 const checkoutSource = await readFile(new URL("../src/PayPalSubscription.jsx", import.meta.url), "utf8");
 const marketingSource = await readFile(new URL("../src/Marketing.jsx", import.meta.url), "utf8");
+const publicPagesSource = await readFile(new URL("../src/PublicPages.jsx", import.meta.url), "utf8");
 
 test("internal QA traffic can be excluded before analytics starts", () => {
   assert.match(analyticsSource, /rt_internal/);
@@ -17,4 +18,10 @@ test("checkout funnel has distinct privacy-safe stages", () => {
   }
   assert.doesNotMatch(checkoutSource, /trackEvent\([^\n]+subscriptionId/);
   assert.doesNotMatch(checkoutSource, /trackEvent\([^\n]+entitlementToken/);
+});
+
+test("snapshot completion is distinct from an attempt and excludes form values", () => {
+  assert.match(analyticsSource, /trackEvent\("snapshot_capture_attempt"\)/);
+  assert.match(publicPagesSource, /trackEvent\("snapshot_capture_success", \{ capture_status: next\.status \}\)/);
+  assert.doesNotMatch(publicPagesSource, /trackEvent\("snapshot_capture_success"[^\n]*(?:url|price|notes)/);
 });

@@ -11,7 +11,8 @@ export function Pricing({ go, annual, setAnnual, setPlan }) {
     <section className="pricing-heading">
       <p className="eyebrow">Room to grow, at your pace</p>
       <h1>A clearer view.<br />A plan that fits.</h1>
-      <p>Choose a recurring RivalTrace plan for your beauty workspace.<br />PayPal handles approval, billing and cancellation securely.</p>
+      <p>Choose a recurring RivalTrace plan. PayPal handles approval, billing and cancellation securely.</p>
+      <p><strong>Current product:</strong> the usable snapshot tool is manual and stored in this browser. Paid plans do not yet unlock automatic checks, account sync, alerts, or different competitor limits.</p>
       <div className="billing-toggle" role="group" aria-label="Billing period">
         <button className={!annual ? "active" : ""} aria-pressed={!annual} onClick={() => setAnnual(false)}>Monthly</button>
         <button className={annual ? "active" : ""} aria-pressed={annual} onClick={() => setAnnual(true)}>Yearly <span>Save 20%</span></button>
@@ -30,7 +31,7 @@ export function Pricing({ go, annual, setAnnual, setPlan }) {
           setPlan(name);
           go("checkout");
         }}>Choose {name}<ArrowRight size={19} /></button>
-        <ul>{["Up to " + plan.competitors + " competitors", "Public product, price & copy tracking", "Before-and-after evidence", "In-app weekly review"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
+        <ul>{["Manual evidence captures on this device", "Compare later captures of the same page", "Sample dashboard and weekly brief"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
       </article>;
     })}</section>
     <DemoNote>Recurring subscriptions are processed securely by PayPal. You can manage or cancel your plan from your PayPal account.</DemoNote>
@@ -58,6 +59,7 @@ export function Checkout({ go, selectedPlan, annual }) {
           <p className="eyebrow">Secure recurring checkout</p>
           <h1>Make room for<br />a clearer picture.</h1>
           <p>Approve your automatically renewing subscription in PayPal. RivalTrace never receives or stores your card details.</p>
+          <p><strong>Before you subscribe:</strong> the current tool is manual and local to this browser. This plan does not yet unlock automatic monitoring, account sync, alerts, or additional capacity.</p>
           <div className="checkout-form">
             <PayPalSubscription planCode={planCode} onSubscribed={setSubscription} />
             <DemoNote>By approving, you start an automatically renewing subscription at the price shown. Cancel anytime from your PayPal account.</DemoNote>
@@ -69,7 +71,7 @@ export function Checkout({ go, selectedPlan, annual }) {
           <p>{plan.label}</p>
           <div className="price"><strong>{"$" + quote.monthly}</strong><span>/ month</span></div>
           <p>{annual ? "Yearly billing · 20% discount" : "Monthly billing"}</p>
-          <ul><li><Check size={18} />{plan.competitors} competitors</li><li><Check size={18} />Timestamped evidence</li><li><Check size={18} />Weekly review</li></ul>
+          <ul><li><Check size={18} />Manual local captures</li><li><Check size={18} />Later same-page comparisons</li><li><Check size={18} />Sample weekly brief</li></ul>
           <div className="total-row"><span>{annual ? "Recurring yearly total" : "Recurring monthly total"}</span><strong>{"$" + quote.total.toFixed(2)}</strong></div>
           <p className="renewal-note">Renews automatically until you cancel. You can manage or cancel the subscription from your PayPal account.</p>
         </aside>

@@ -100,5 +100,5 @@ export function PayPalSubscription({ planCode, onSubscribed }) {
 }
 
 export function SubscriptionSuccess({ subscription, selectedPlan, go }) {
-  return <section className="success-card"><CheckCircle size={62} /><p className="eyebrow">Subscription verified</p><h1>Your RivalTrace plan<br />is ready.</h1><p>PayPal confirmed the {selectedPlan} subscription. Its recurring status is checked by the server before access is restored.</p><p className="subscription-reference">Subscription reference · {subscription.subscriptionId}</p><button className="primary-button" onClick={() => go("app")}>Open your workspace</button></section>;
+  return <section className="success-card"><CheckCircle size={62} /><p className="eyebrow">Subscription verified</p><h1>Your RivalTrace plan<br />is active.</h1><p>PayPal confirmed the {selectedPlan} subscription. The current capture tool remains manual and local to this browser; automated monitoring and account sync are not available yet.</p><p className="subscription-reference">Subscription reference · {subscription.subscriptionId}</p><button className="primary-button" onClick={() => go("app")}>Open the demo workspace</button></section>;
 }
