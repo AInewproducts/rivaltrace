@@ -9,6 +9,13 @@ Primary website: https://ainewproducts.github.io/rivaltrace/
 - Beauty competitor monitoring guide: https://ainewproducts.github.io/rivaltrace/guides/how-to-track-beauty-competitors/
 - Free beauty competitor price tracking template: https://ainewproducts.github.io/rivaltrace/guides/beauty-competitor-price-tracking-template/
 - Research library (30 guides, 30 worksheets, 30 glossary pages): https://ainewproducts.github.io/rivaltrace/library/
+- Free research tools hub: https://ainewproducts.github.io/rivaltrace/tools/
+- Beauty price change calculator: https://ainewproducts.github.io/rivaltrace/tools/beauty-price-change-calculator/
+- Skincare price per ml calculator: https://ainewproducts.github.io/rivaltrace/tools/skincare-price-per-ml-calculator/
+- Beauty bundle listed-savings calculator: https://ainewproducts.github.io/rivaltrace/tools/beauty-bundle-savings-calculator/
+- Beauty promotion price calculator: https://ainewproducts.github.io/rivaltrace/tools/beauty-promotion-price-calculator/
+- Free-shipping threshold calculator: https://ainewproducts.github.io/rivaltrace/tools/free-shipping-threshold-calculator/
+- Pricing and current product limits: https://ainewproducts.github.io/rivaltrace/pricing/
 - Monitoring methodology: https://ainewproducts.github.io/rivaltrace/methodology/
 - About RivalTrace: https://ainewproducts.github.io/rivaltrace/about/
 - Summer Fridays cited brand example: https://ainewproducts.github.io/rivaltrace/beauty-brands/summer-fridays/
@@ -24,3 +31,10 @@ Primary website: https://ainewproducts.github.io/rivaltrace/
 ## Current product boundary
 
 The free snapshot tool is manual and local to the browser. It does not use an external data API, fetch competitor pages, sync to an account or run background monitoring. Paid subscriptions are processed separately by PayPal, but do not currently unlock automated monitoring, account sync, alerts or different competitor limits.
+
+## Research paths
+
+- Build a comparable baseline: free snapshot, monitoring guide and methodology.
+- Check listed-price movement: price-change calculator, unit-price calculator and price-tracking template.
+- Rebuild public offer arithmetic: bundle, promotion and shipping-threshold calculators.
+- Turn evidence into a brief: cited public snapshot, weekly brief template and competitor watchlist guide.

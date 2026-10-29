@@ -6,6 +6,9 @@ import { Pricing, Checkout, Product } from "./Marketing.jsx";
 import { AboutPage, BeautyMonitoringGuide, MethodologyPage, PriceTrackingTemplateGuide, PrivacyPage, SnapshotTool, SummerFridaysBrand, SummerFridaysSnapshot } from "./PublicPages.jsx";
 import { LibraryArticle, LibraryHub } from "./LibraryPages.jsx";
 import { libraryByRoute, libraryEntries, libraryHubRoute } from "./seoLibrary.js";
+import { ResearchToolPage, ResearchToolsHub } from "./ResearchTools.jsx";
+import { researchToolByRoute, researchToolHub, researchTools } from "./researchToolCatalog.js";
+import { commercialClusters, homeFaq } from "./seoContent.js";
 
 const DEPLOY_BASE = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 const assetUrl = (name) => `${DEPLOY_BASE}/assets/${name}`;
@@ -20,10 +23,13 @@ const PUBLIC_ROUTE_PATHS = {
   about: "/about",
   privacy: "/privacy",
   library: "/library",
+  toolbox: "/tools",
+  pricing: "/pricing",
   ...Object.fromEntries(libraryEntries.map((entry) => [entry.route, entry.path.replace(/\/$/, "")])),
+  ...Object.fromEntries(researchTools.map((tool) => [tool.route, tool.path.replace(/\/$/, "")])),
 };
 const PUBLIC_PATHS = Object.fromEntries(Object.entries(PUBLIC_ROUTE_PATHS).map(([route, path]) => [route, path === "/" ? `${DEPLOY_BASE}/` : `${DEPLOY_BASE}${path}/`]));
-const PUBLIC_MODIFIED = { home: "2026-09-22", snapshot: "2026-09-08", brand: "2026-09-22", "public-report": "2026-09-22", guide: "2026-09-22", methodology: "2026-09-01", about: "2026-09-22", privacy: "2026-09-08", library: "2026-09-22" };
+const PUBLIC_MODIFIED = { home: "2026-10-29", snapshot: "2026-09-08", brand: "2026-09-22", "public-report": "2026-09-22", guide: "2026-09-22", methodology: "2026-09-01", about: "2026-09-22", privacy: "2026-09-08", library: "2026-10-29", toolbox: "2026-10-29", calculator: "2026-10-29", pricing: "2026-10-29" };
 
 function routeFromLocation() {
   const fullPath = window.location.pathname;
@@ -67,11 +73,11 @@ function DemoNote({ children }) { return <p className="demo-note"><ShieldCheck s
 
 function MarketingNav({ go }) {
   const [open, setOpen] = useState(false);
-  return <header className="marketing-nav"><Brand go={go} /><button className="menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="marketing-menu" onClick={() => setOpen(!open)}>{open ? <X size={24} /> : <List size={24} />}</button><nav id="marketing-menu" className={open ? "is-open" : ""} aria-label="Primary navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["library", "Library"], ["methodology", "Method"], ["app", "Open demo"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id] || "#" + id} onClick={(e) => { e.preventDefault(); setOpen(false); go(id); }}>{label}</a>)}</nav></header>;
+  return <header className="marketing-nav"><Brand go={go} /><button className="menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="marketing-menu" onClick={() => setOpen(!open)}>{open ? <X size={24} /> : <List size={24} />}</button><nav id="marketing-menu" className={open ? "is-open" : ""} aria-label="Primary navigation">{[["snapshot", "Free snapshot"], ["toolbox", "Tools"], ["library", "Library"], ["methodology", "Method"], ["pricing", "Pricing"], ["app", "Open demo"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id] || "#" + id} onClick={(e) => { e.preventDefault(); setOpen(false); go(id); }}>{label}</a>)}</nav></header>;
 }
 
 function Footer({ go }) {
-  return <footer className="site-footer"><div><Brand go={go} /><p>A clearer view of your beauty market.</p></div><nav aria-label="Footer navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["library", "Library"], ["guide/price-template", "Price template"], ["methodology", "Methodology"], ["about", "About"], ["privacy", "Privacy"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id]} onClick={(e) => { e.preventDefault(); go(id); }}>{label}</a>)}</nav><small>© 2026 RivalTrace · Public brand references are cited. Sample changes remain clearly labeled.</small></footer>;
+  return <footer className="site-footer"><div><Brand go={go} /><p>A clearer view of your beauty market.</p></div><nav aria-label="Footer navigation">{[["snapshot", "Free snapshot"], ["brand/summer-fridays", "Brand example"], ["guide/monitoring", "Guide"], ["toolbox", "Tools"], ["library", "Library"], ["guide/price-template", "Price template"], ["methodology", "Methodology"], ["pricing", "Pricing"], ["about", "About"], ["privacy", "Privacy"]].map(([id, label]) => <a key={id} href={PUBLIC_PATHS[id]} onClick={(e) => { e.preventDefault(); go(id); }}>{label}</a>)}</nav><small>© 2026 RivalTrace · Public brand references are cited. Sample changes remain clearly labeled.</small></footer>;
 }
 
 function UrlForm({ value, setValue, onSubmit, id = "competitor-url", button = "Start tracking", disabled = false }) {
@@ -98,7 +104,7 @@ function Home({ go, shopUrl, setShopUrl, openReport, section }) {
   return <main className="home-page">
     <section className="beauty-hero" aria-labelledby="hero-title">
       <MarketingNav go={go} />
-      <div className="hero-copy"><p className="eyebrow">Competitor monitoring for beauty brands</p><h1 id="hero-title">Beauty moves fast.<br />Stay in the know.</h1><p className="hero-subtitle">Record public prices, availability, and promotions.<br className="desktop-break" /> Compare a later capture to see what changed.</p></div>
+      <div className="hero-copy"><p className="eyebrow">Beauty competitor monitoring tool</p><h1 id="hero-title">Beauty moves fast.<br />Stay in the know.</h1><p className="hero-subtitle">Record public prices, availability, and promotions.<br className="desktop-break" /> Compare a later capture to see what changed.</p></div>
       <UrlForm value={shopUrl} setValue={setShopUrl} onSubmit={() => go("snapshot")} button="Get a free snapshot" />
       <p className="baseline-note">No account required. Your first manual capture establishes a baseline. <span>Changes require a later capture.</span></p>
       <button className="text-link hero-link" onClick={() => openReport("price")}>View a sample report</button>
@@ -107,10 +113,11 @@ function Home({ go, shopUrl, setShopUrl, openReport, section }) {
     </section>
     <Steps /><div className="basics-link"><a className="text-link" href="#product">Learn the beauty monitoring basics <ArrowRight size={18} /></a></div>
     <section className="home-detail section-container"><div className="section-heading"><p className="eyebrow">A change is only the beginning</p><h2>The detail behind<br />every difference.</h2><p>See the before, the after, and the context.<br />Keep the decision in your hands.</p><button className="text-link" onClick={() => openReport("price")}>Explore sample evidence <ArrowRight size={19} /></button></div><div className="mini-evidence"><div className="mini-evidence-top"><Badge type="price">Price change</Badge><span>Illustrative example</span></div><h3>Barrier Serum · 30 ml</h3><div className="price-comparison"><div><small>Aug 27, 2026</small><strong>$48</strong><span>Before</span></div><ArrowRight size={26} /><div><small>Aug 28, 2026</small><strong>$52</strong><span>After</span></div></div><p><ShieldCheck size={18} />Same product. Same size. +8.33% listed price.</p></div></section>
-    <section id="guides" className="guides-section section-container"><div className="section-heading"><p className="eyebrow">The beauty monitoring edit</p><h2>A little context.<br />A clearer next step.</h2></div><div className="guide-grid">{guides.map((guide) => <details className="guide" key={guide.title}><summary><span className="eyebrow">{guide.category}</span><h3>{guide.title}</h3><span className="guide-read">Read the guide <ArrowRight size={19} /></span></summary><p>{guide.body}</p></details>)}</div><div className="basics-link"><a className="text-link" href={PUBLIC_PATHS["guide/price-template"]} onClick={(event) => { event.preventDefault(); go("guide/price-template"); }}>Get the free beauty price tracking template <ArrowRight size={18} /></a><a className="text-link" href={PUBLIC_PATHS.library} onClick={(event) => { event.preventDefault(); go("library"); }}>Explore 90 free research resources <ArrowRight size={18} /></a></div></section>
+    <section id="guides" className="guides-section section-container"><div className="section-heading"><p className="eyebrow">The beauty monitoring edit</p><h2>A little context.<br />A clearer next step.</h2></div><div className="guide-grid">{guides.map((guide) => <details className="guide" key={guide.title}><summary><span className="eyebrow">{guide.category}</span><h3>{guide.title}</h3><span className="guide-read">Read the guide <ArrowRight size={19} /></span></summary><p>{guide.body}</p></details>)}</div><div className="basics-link"><a className="text-link" href={PUBLIC_PATHS["guide/price-template"]} onClick={(event) => { event.preventDefault(); go("guide/price-template"); }}>Get the free beauty price tracking template <ArrowRight size={18} /></a><a className="text-link" href={PUBLIC_PATHS.toolbox} onClick={(event) => { event.preventDefault(); go("toolbox"); }}>Try five free research calculators <ArrowRight size={18} /></a><a className="text-link" href={PUBLIC_PATHS.library} onClick={(event) => { event.preventDefault(); go("library"); }}>Explore 90 free research resources <ArrowRight size={18} /></a></div></section>
+    <section className="commercial-pathways section-container" aria-labelledby="research-pathways-title"><div className="section-heading"><p className="eyebrow">Choose the research question</p><h2 id="research-pathways-title">One workflow.<br />Four useful starting points.</h2><p>Use the smallest tool that answers the question, then keep the source and limits beside the result.</p></div><div className="commercial-pathway-grid">{commercialClusters.map((cluster) => <article key={cluster.title}><p className="eyebrow">{cluster.eyebrow}</p><h3>{cluster.title}</h3><p>{cluster.body}</p><div>{cluster.links.map(([target, label]) => <a href={PUBLIC_PATHS[target]} onClick={(event) => { event.preventDefault(); go(target); }} key={target}>{label}<ArrowRight size={17} /></a>)}</div></article>)}</div></section>
     <section className="real-example section-container"><div><p className="eyebrow">Real public source · August 28, 2026</p><h2>See the method on<br />Summer Fridays.</h2><p>Review a cited brand profile and a dated product-page baseline. Facts are separated from interpretation, and no historical change is invented.</p><div className="example-actions"><a className="primary-button" href={PUBLIC_PATHS["brand/summer-fridays"]} onClick={(event) => { event.preventDefault(); go("brand/summer-fridays"); }}>Open brand example <ArrowRight size={19} /></a><a className="outline-button" href={PUBLIC_PATHS["public-report/summer-fridays"]} onClick={(event) => { event.preventDefault(); go("public-report/summer-fridays"); }}>View cited snapshot</a></div></div><div className="example-proof"><Badge type="copy">Baseline only</Badge><h3>Jet Lag Mask® + Moisturizer</h3><dl><div><dt>Source</dt><dd>summerfridays.com</dd></div><div><dt>Visible offer</dt><dd>Subscribe & Save 15%</dd></div><div><dt>Evidence state</dt><dd>Aug 28 baseline</dd></div><div><dt>Change claim</dt><dd>None</dd></div></dl></div></section>
-    <section className="faq-section section-container"><div><p className="eyebrow">Good questions</p><h2>Before you<br />start watching.</h2></div><div className="faq-list">{[["What does RivalTrace monitor?", "The free snapshot lets you record publicly visible price, availability and promotional wording, then compare a later manual capture on the same device."], ["Will my first scan show historical changes?", "No. Your first capture establishes a baseline. A real change can only be shown after a later comparable capture. The sample dashboard reports remain clearly labeled illustrations."], ["Does this version use AI or third-party data APIs?", "No. The snapshot tool stores your entries in this browser and compares them with rules. It does not fetch the competitor page, call an external API or sync to an account."], ["Can I subscribe or start background monitoring here?", "You can start a real automatically renewing PayPal subscription. The current monitoring workflow remains manual and local to this browser; background monitoring and account sync are not included yet."]].map(([question, answer]) => <details key={question}><summary>{question}<ArrowRight size={19} /></summary><p>{answer}</p></details>)}</div></section>
-    <section className="conversion-band"><p className="eyebrow">Start with one competitor</p><h2>Your next insight starts<br />with a closer look.</h2><button className="primary-button" onClick={() => document.getElementById("competitor-url")?.focus()}>Try a competitor URL <ArrowRight size={20} /></button><small>Explore the demo. No account or card required.</small></section><Footer go={go} />
+    <section className="faq-section section-container"><div><p className="eyebrow">Good questions</p><h2>Before you<br />start watching.</h2></div><div className="faq-list">{homeFaq.map(([question, answer]) => <details key={question}><summary>{question}<ArrowRight size={19} /></summary><p>{answer}</p></details>)}</div></section>
+    <section className="conversion-band"><p className="eyebrow">Start with one competitor</p><h2>Your next insight starts<br />with a closer look.</h2><div className="conversion-actions"><button className="primary-button" onClick={() => document.getElementById("competitor-url")?.focus()}>Try a competitor URL <ArrowRight size={20} /></button><a className="outline-button" href={PUBLIC_PATHS.pricing} onClick={(event) => { event.preventDefault(); go("pricing"); }}>See pricing and current limits</a></div><small>Explore the manual workflow first. No account or card required.</small></section><Footer go={go} />
   </main>;
 }
 
@@ -128,7 +135,7 @@ export function App({ initialRoute } = {}) {
   const page = route.split("/")[0];
   useEffect(() => {
     const metadata = {
-      home: ["Beauty Competitor Monitoring", "Track public beauty competitor prices, product launches and promotion changes with timestamped evidence."],
+      home: ["Beauty Competitor Monitoring Tool", "Use a free manual beauty competitor monitoring tool to record public prices, availability, launches, and promotions with timestamped evidence."],
       snapshot: ["Free Competitor Snapshot", "Prepare an evidence-first baseline for a public beauty storefront. No account or external data API required."],
       brand: ["Summer Fridays Competitor Intelligence", "A cited Summer Fridays brand monitoring example covering public products, offers and pages to watch."],
       "public-report": ["Summer Fridays Public Snapshot", "A dated, source-linked baseline of the Summer Fridays Jet Lag Mask product page."],
@@ -140,13 +147,17 @@ export function App({ initialRoute } = {}) {
       report: ["Sample Evidence", "RivalTrace sample evidence report."],
       weekly: ["Weekly Brief", "RivalTrace sample weekly brief."],
       setup: ["Add a Page", "Prepare a beauty competitor page baseline."],
-      pricing: ["Plans", "RivalTrace recurring plans and the current manual, local evidence workflow."],
+      pricing: ["RivalTrace Pricing", "Review RivalTrace recurring supporter plans, PayPal billing, and the current limits of the manual local beauty competitor monitoring workflow."],
       checkout: ["Checkout", "Secure recurring RivalTrace subscription checkout powered by PayPal."],
       product: ["How It Works", "Learn the evidence-first RivalTrace competitor monitoring method."],
       library: [libraryHubRoute.title, libraryHubRoute.description],
+      toolbox: [researchToolHub.title, researchToolHub.description],
     };
     const libraryEntry = libraryByRoute[route];
-    const [title, description] = libraryEntry
+    const researchTool = researchToolByRoute[route];
+    const [title, description] = researchTool
+      ? [researchTool.title, researchTool.description]
+      : libraryEntry
       ? [libraryEntry.title, libraryEntry.summary]
       : route === "guide/price-template"
       ? ["Beauty Competitor Price Tracking Template", "Download a free beauty competitor price tracking CSV and compare like-for-like public offers without inventing changes."]
@@ -180,14 +191,16 @@ export function App({ initialRoute } = {}) {
     }
     canonical.href = window.location.origin + canonicalPath;
     const siteUrl = window.location.origin + PUBLIC_PATHS.home;
-    const schemaType = libraryEntry ? (libraryEntry.category === "worksheets" ? "CreativeWork" : "Article") : page === "library" ? "CollectionPage" : page === "guide" ? "Article" : page === "snapshot" ? "WebApplication" : page === "brand" ? "ProfilePage" : page === "about" ? "AboutPage" : page === "home" ? "WebSite" : "WebPage";
+    const schemaType = researchTool ? "WebApplication" : page === "toolbox" ? "CollectionPage" : libraryEntry ? (libraryEntry.category === "worksheets" ? "CreativeWork" : "Article") : page === "library" ? "CollectionPage" : page === "guide" ? "Article" : page === "snapshot" ? "WebApplication" : page === "brand" ? "ProfilePage" : page === "about" ? "AboutPage" : page === "home" ? "WebSite" : "WebPage";
+    const faq = researchTool?.faq || (page === "home" ? homeFaq : []);
     const schema = {
       "@context": "https://schema.org",
       "@graph": [
         { "@type": "Organization", "@id": siteUrl + "#organization", name: "RivalTrace", url: siteUrl, description: "Evidence-first beauty competitor monitoring for independent brands and lean teams." },
         { "@type": "WebSite", "@id": siteUrl + "#website", name: "RivalTrace", url: siteUrl, publisher: { "@id": siteUrl + "#organization" }, inLanguage: "en" },
-        { "@type": schemaType, "@id": canonical.href + "#page", name: title, headline: title, description, url: canonical.href, image: window.location.origin + DEPLOY_BASE + "/og.png", dateModified: route === "guide/price-template" ? "2026-09-22" : PUBLIC_MODIFIED[page] || "2026-09-08", isPartOf: { "@id": siteUrl + "#website" }, publisher: { "@id": siteUrl + "#organization" }, ...(page === "snapshot" ? { applicationCategory: "BusinessApplication", operatingSystem: "Web", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } } : {}) },
+        { "@type": schemaType, "@id": canonical.href + "#page", name: title, headline: title, description, url: canonical.href, image: window.location.origin + DEPLOY_BASE + "/og.png", dateModified: route === "guide/price-template" ? "2026-09-22" : PUBLIC_MODIFIED[page] || "2026-09-08", isPartOf: { "@id": siteUrl + "#website" }, publisher: { "@id": siteUrl + "#organization" }, ...(["snapshot", "calculator"].includes(page) ? { applicationCategory: "BusinessApplication", operatingSystem: "Web", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } } : {}) },
         ...(page === "home" ? [] : [{ "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "RivalTrace", item: siteUrl }, { "@type": "ListItem", position: 2, name: title, item: canonical.href }] }]),
+        ...(faq.length ? [{ "@type": "FAQPage", mainEntity: faq.map(([question, answer]) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) }] : []),
       ],
     };
     let structuredData = document.getElementById("rivaltrace-structured-data");
@@ -210,6 +223,8 @@ export function App({ initialRoute } = {}) {
   else if (page === "privacy") content = <PrivacyPage go={go} />;
   else if (route === "library") content = <LibraryHub go={go} Nav={MarketingNav} Footer={Footer} />;
   else if (libraryByRoute[route]) content = <LibraryArticle entry={libraryByRoute[route]} go={go} Nav={MarketingNav} Footer={Footer} />;
+  else if (route === "toolbox") content = <ResearchToolsHub go={go} Nav={MarketingNav} Footer={Footer} />;
+  else if (researchToolByRoute[route]) content = <ResearchToolPage key={route} tool={researchToolByRoute[route]} go={go} Nav={MarketingNav} Footer={Footer} />;
   else if (page === "setup") content = <Setup go={go} shopUrl={shopUrl} setShopUrl={setShopUrl} onBaseline={setBaseline} />;
   else if (page === "app") content = <Dashboard go={go} openReport={openReport} baseline={baseline} decisions={decisions} />;
   else if (page === "weekly") content = <Weekly go={go} openReport={openReport} decisions={decisions} />;

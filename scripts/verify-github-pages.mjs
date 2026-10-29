@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { libraryEntries } from "../src/seoLibrary.js";
+import { researchTools } from "../src/researchToolCatalog.js";
 
 const pages = [
   ["index.html", "Your beauty watchlist"],
@@ -33,8 +34,8 @@ const sitemap = await readFile(new URL("../dist/client/sitemap.xml", import.meta
 assert.match(sitemap, /guides\/beauty-competitor-price-tracking-template\//);
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 assert.equal(libraryEntries.length, 90, "expected 90 editorial resources");
-assert.equal(sitemapUrls.length, 100, "expected exactly 100 public sitemap URLs");
-assert.equal(new Set(sitemapUrls).size, 100, "duplicate sitemap URL");
+assert.equal(sitemapUrls.length, 107, "expected exactly 107 public sitemap URLs");
+assert.equal(new Set(sitemapUrls).size, 107, "duplicate sitemap URL");
 const hub = await readFile(new URL("../dist/client/library/index.html", import.meta.url), "utf8");
 assert.match(hub, /<h1>Research a beauty market with evidence, not guesses\.<\/h1>/);
 const uniqueTitles = new Set();
@@ -55,4 +56,34 @@ for (const entry of libraryEntries) {
   assert.ok(!uniqueTitles.has(entry.title), `${entry.route}: duplicate title`);
   uniqueTitles.add(entry.title);
 }
-console.log(`Verified ${pages.length + 1 + libraryEntries.length} prerendered public pages, unique sitemap URLs, and noindex 404.`);
+const toolsHub = await readFile(new URL("../dist/client/tools/index.html", import.meta.url), "utf8");
+assert.match(toolsHub, /Free beauty competitor research tools/);
+assert.equal(researchTools.length, 5, "expected five working research calculators");
+for (const tool of researchTools) {
+  const html = await readFile(new URL(`../dist/client/tools/${tool.slug}/index.html`, import.meta.url), "utf8");
+  const decoded = html.replaceAll("&amp;", "&").replaceAll("&#x27;", "'").replaceAll("&quot;", '"').replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+  const canonical = `https://ainewproducts.github.io/rivaltrace${tool.path}`;
+  assert.ok(sitemapUrls.includes(canonical), `${tool.slug}: missing from sitemap`);
+  assert.ok(toolsHub.includes(`href="/rivaltrace${tool.path}"`), `${tool.slug}: missing from tools hub`);
+  assert.ok(html.includes(`<link rel="canonical" href="${canonical}" />`), `${tool.slug}: wrong canonical`);
+  assert.ok(decoded.includes(`<h1>${tool.title}</h1>`), `${tool.slug}: wrong heading`);
+  assert.ok(decoded.includes(tool.description), `${tool.slug}: missing unique description`);
+  for (const section of [tool.lede, tool.how, tool.example, tool.interpretation, tool.boundary]) {
+    assert.ok(decoded.includes(section), `${tool.slug}: missing a substantive section`);
+  }
+  // Editorial completeness check, not a search-engine word-count target.
+  assert.ok([tool.lede, tool.how, tool.example, tool.interpretation, tool.boundary].join(" ").split(/\s+/).length >= 180, `${tool.slug}: incomplete editorial copy`);
+  assert.match(html, /<input type="number"/, `${tool.slug}: calculator input missing`);
+  assert.ok(!uniqueTitles.has(tool.title), `${tool.slug}: duplicate title`);
+  uniqueTitles.add(tool.title);
+}
+const pricing = await readFile(new URL("../dist/client/pricing/index.html", import.meta.url), "utf8");
+assert.ok(sitemapUrls.includes("https://ainewproducts.github.io/rivaltrace/pricing/"), "pricing: missing from sitemap");
+assert.match(pricing, /automatically renewing supporter subscriptions/);
+assert.match(pricing, /does not yet unlock automatic checks/);
+const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+assert.match(home, /Beauty Competitor Monitoring Tool/);
+assert.match(home, /Choose the research question/);
+assert.match(home, /"@type":"FAQPage"/);
+assert.equal(researchTools.every((tool) => tool.faq.length >= 2 && tool.focusQuery), true, "tool SEO fields are incomplete");
+console.log(`Verified ${pages.length + 1 + libraryEntries.length + 1 + researchTools.length + 1} prerendered public pages, unique sitemap URLs, pricing boundaries, and noindex 404.`);

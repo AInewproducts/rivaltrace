@@ -9,10 +9,11 @@ export function Pricing({ go, annual, setAnnual, setPlan }) {
   return <main className="pricing-page">
     <MarketingNav go={go} />
     <section className="pricing-heading">
-      <p className="eyebrow">Room to grow, at your pace</p>
-      <h1>A clearer view.<br />A plan that fits.</h1>
-      <p>Choose a recurring RivalTrace plan. PayPal handles approval, billing and cancellation securely.</p>
-      <p><strong>Current product:</strong> the usable snapshot tool is manual and stored in this browser. Paid plans do not yet unlock automatic checks, account sync, alerts, or different competitor limits.</p>
+      <p className="eyebrow">RivalTrace pricing · Current product state</p>
+      <h1>Explore the workflow first.<br />Subscribe with clear expectations.</h1>
+      <p>The free beauty competitor snapshot and research tools are available without an account or card. The plans below are automatically renewing supporter subscriptions processed by PayPal.</p>
+      <p className="pricing-boundary"><strong>Important:</strong> every paid tier currently uses the same manual, browser-local workflow. A subscription does not yet unlock automatic checks, account sync, alerts, background monitoring, or different competitor limits.</p>
+      <div className="pricing-free-path"><button className="outline-button" onClick={() => go("snapshot")}>Try the free snapshot first <ArrowRight size={18} /></button><button className="outline-button" onClick={() => go("toolbox")}>Open free research tools</button></div>
       <div className="billing-toggle" role="group" aria-label="Billing period">
         <button className={!annual ? "active" : ""} aria-pressed={!annual} onClick={() => setAnnual(false)}>Monthly</button>
         <button className={annual ? "active" : ""} aria-pressed={annual} onClick={() => setAnnual(true)}>Yearly <span>Save 20%</span></button>
@@ -30,10 +31,11 @@ export function Pricing({ go, annual, setAnnual, setPlan }) {
           trackEvent("select_plan", { plan_code: `${name.toLowerCase()}-${annual ? "yearly" : "monthly"}`, billing_period: annual ? "yearly" : "monthly" });
           setPlan(name);
           go("checkout");
-        }}>Choose {name}<ArrowRight size={19} /></button>
-        <ul>{["Manual evidence captures on this device", "Compare later captures of the same page", "Sample dashboard and weekly brief"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
+        }}>Support with {name}<ArrowRight size={19} /></button>
+        <ul>{["Use the current manual local workflow", "Recurring PayPal billing at the displayed price", "Manage or cancel from your PayPal account", "No additional product capacity yet"].map((text) => <li key={text}><Check size={18} />{text}</li>)}</ul>
       </article>;
     })}</section>
+    <section className="pricing-faq section-container"><div><p className="eyebrow">Before subscribing</p><h2>What payment changes—and what it does not.</h2></div><div><article><h3>Is the subscription real?</h3><p>Yes. Approval starts an automatically renewing PayPal subscription at the displayed monthly or yearly amount until you cancel.</p></article><article><h3>Does payment unlock automation?</h3><p>No. The current product remains manual and local to this browser. Do not subscribe expecting background monitoring, alerts, account sync, or expanded limits.</p></article><article><h3>Can I evaluate RivalTrace for free?</h3><p>Yes. Use the snapshot, calculators, research library, sample evidence report, and demo before deciding whether to support development.</p></article></div></section>
     <DemoNote>Recurring subscriptions are processed securely by PayPal. You can manage or cancel your plan from your PayPal account.</DemoNote>
     <Footer go={go} />
   </main>;

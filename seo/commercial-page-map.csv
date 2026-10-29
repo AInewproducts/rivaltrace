@@ -1,0 +1,15 @@
+priority,route,primary_query,intent,primary_cta,status
+1,/,beauty competitor monitoring tool,solution discovery,Free competitor snapshot,implemented locally
+2,/tools/competitor-snapshot/,free beauty competitor snapshot,tool use,Save a manual baseline,implemented
+3,/guides/how-to-track-beauty-competitors/,how to track beauty competitors,learning,Open free snapshot,implemented
+4,/guides/beauty-competitor-price-tracking-template/,beauty competitor price tracking template,download,Download CSV template,implemented
+5,/tools/,free beauty competitor research tools,tool discovery,Choose a calculator,implemented locally
+6,/tools/beauty-price-change-calculator/,beauty competitor price tracking tool,calculate,Create a free baseline,implemented locally
+7,/tools/skincare-price-per-ml-calculator/,skincare price per ml calculator,calculate,Create a free baseline,implemented locally
+8,/tools/beauty-bundle-savings-calculator/,beauty bundle savings calculator,calculate,Create a free baseline,implemented locally
+9,/tools/beauty-promotion-price-calculator/,beauty promotion price calculator,calculate,Create a free baseline,implemented locally
+10,/tools/free-shipping-threshold-calculator/,beauty free shipping threshold calculator,calculate,Create a free baseline,implemented locally
+11,/reports/summer-fridays-competitor-snapshot/,Summer Fridays competitor analysis,evidence example,Open free snapshot,implemented
+12,/library/worksheets/weekly-brief-template/,beauty competitor analysis report template,copy template,Open related free tool,implemented locally
+13,/library/guides/competitor-watchlist/,beauty competitor watchlist guide,learning,Open related free tool,implemented locally
+14,/pricing/,RivalTrace pricing,commercial evaluation,Try free workflow first,implemented locally

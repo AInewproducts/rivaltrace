@@ -4,12 +4,14 @@ import { renderToString } from "react-dom/server";
 import { createServer } from "vite";
 import react from "@vitejs/plugin-react";
 import { libraryEntries, libraryHubRoute } from "../src/seoLibrary.js";
+import { researchToolHub, researchTools } from "../src/researchToolCatalog.js";
+import { homeFaq } from "../src/seoContent.js";
 
 const output = new URL("../dist/client/", import.meta.url);
 const siteOrigin = "https://ainewproducts.github.io/rivaltrace";
 const modified = "2026-09-08";
 const routes = [
-  { route: "home", path: "/", file: "index.html", title: "Beauty Competitor Monitoring", description: "Track public beauty competitor prices, product launches and promotion changes with timestamped evidence.", heading: "Beauty moves fast. Stay in the know.", modified: "2026-09-22", type: "WebSite" },
+  { route: "home", path: "/", file: "index.html", title: "Beauty Competitor Monitoring Tool", description: "Use a free manual beauty competitor monitoring tool to record public prices, availability, launches, and promotions with timestamped evidence.", heading: "Beauty moves fast. Stay in the know.", modified: "2026-10-29", type: "WebSite", faq: homeFaq },
   { route: "snapshot", path: "/tools/competitor-snapshot/", file: "tools/competitor-snapshot/index.html", title: "Free Competitor Snapshot", description: "Prepare an evidence-first baseline for a public beauty storefront. No account or external data API required.", heading: "Start with what is visible today.", type: "WebApplication" },
   { route: "brand/summer-fridays", path: "/beauty-brands/summer-fridays/", file: "beauty-brands/summer-fridays/index.html", title: "Summer Fridays Competitor Intelligence", description: "A dated Summer Fridays brand monitoring example covering public products, offers and pages to watch.", heading: "Summer Fridays", modified: "2026-09-22", type: "ProfilePage" },
   { route: "public-report/summer-fridays", path: "/reports/summer-fridays-competitor-snapshot/", file: "reports/summer-fridays-competitor-snapshot/index.html", title: "Summer Fridays Public Snapshot", description: "A dated, source-linked baseline of the Summer Fridays Jet Lag Mask product page.", heading: "Jet Lag Mask + Moisturizer", modified: "2026-09-22", type: "WebPage" },
@@ -18,8 +20,11 @@ const routes = [
   { route: "methodology", path: "/methodology/", file: "methodology/index.html", title: "Competitor Monitoring Methodology", description: "How RivalTrace records public beauty storefront facts, validates comparisons and separates evidence from interpretation.", heading: "Evidence before interpretation", modified: "2026-09-01", type: "WebPage" },
   { route: "about", path: "/about/", file: "about/index.html", title: "About RivalTrace", description: "RivalTrace is an evidence-first beauty competitor monitoring product for independent brands and lean teams.", heading: "A clearer view of the beauty market", modified: "2026-09-22", type: "AboutPage" },
   { route: "privacy", path: "/privacy/", file: "privacy/index.html", title: "Privacy & Analytics", description: "How RivalTrace handles local captures, optional website analytics and your privacy choices.", heading: "Your research stays yours", type: "WebPage" },
-  { ...libraryHubRoute, file: "library/index.html", heading: libraryHubRoute.title, type: "CollectionPage", modified: "2026-09-22", generated: true },
-  ...libraryEntries.map((entry) => ({ route: entry.route, path: entry.path, file: `${entry.route}/index.html`, title: entry.title, description: entry.summary, heading: entry.title, type: entry.category === "worksheets" ? "CreativeWork" : "Article", modified: "2026-09-22", generated: true })),
+  { route: "pricing", path: "/pricing/", file: "pricing/index.html", title: "RivalTrace Pricing", description: "Review RivalTrace recurring supporter plans, PayPal billing, and the current limits of the manual local beauty competitor monitoring workflow.", heading: "Explore the workflow first. Subscribe with clear expectations.", modified: "2026-10-29", type: "WebPage", generated: true },
+  { ...libraryHubRoute, file: "library/index.html", heading: libraryHubRoute.title, type: "CollectionPage", modified: "2026-10-29", generated: true },
+  ...libraryEntries.map((entry) => ({ route: entry.route, path: entry.path, file: `${entry.route}/index.html`, title: entry.title, description: entry.summary, heading: entry.title, type: entry.category === "worksheets" ? "CreativeWork" : "Article", modified: "2026-10-29", generated: true })),
+  { ...researchToolHub, file: "tools/index.html", heading: researchToolHub.title, type: "CollectionPage", modified: "2026-10-29", generated: true },
+  ...researchTools.map((tool) => ({ route: tool.route, path: tool.path, file: `tools/${tool.slug}/index.html`, title: tool.title, description: tool.description, heading: tool.title, type: "WebApplication", modified: "2026-10-29", faq: tool.faq, generated: true })),
 ];
 
 function escapeHtml(value) {
@@ -47,6 +52,7 @@ function structuredData(route, canonical, image) {
       { "@type": "WebSite", "@id": `${siteOrigin}/#website`, url: `${siteOrigin}/`, name: "RivalTrace", publisher: { "@id": `${siteOrigin}/#organization` }, inLanguage: "en" },
       page,
       ...(route.path === "/" ? [] : [{ "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "RivalTrace", item: `${siteOrigin}/` }, { "@type": "ListItem", position: 2, name: route.title, item: canonical }] }]),
+      ...(route.faq?.length ? [{ "@type": "FAQPage", mainEntity: route.faq.map(([question, answer]) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) }] : []),
     ],
   };
 }
