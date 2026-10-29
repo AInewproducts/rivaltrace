@@ -82,6 +82,7 @@ assert.ok(sitemapUrls.includes("https://ainewproducts.github.io/rivaltrace/prici
 assert.match(pricing, /automatically renewing supporter subscriptions/);
 assert.match(pricing, /does not yet unlock automatic checks/);
 const home = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+assert.match(home, /<title>Beauty Competitor Monitoring Tool — RivalTrace<\/title>/);
 assert.match(home, /Beauty Competitor Monitoring Tool/);
 assert.match(home, /Choose the research question/);
 assert.match(home, /"@type":"FAQPage"/);
